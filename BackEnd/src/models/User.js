@@ -5,20 +5,22 @@ const userSchema = mongoose.Schema({
             type: String,
             required: true,
             unique: true,
+            trim:true,
         },
         password: {
             type: String,
             required: true,
-            unique: true,
         },
         email: {
             type: String,
             required: true,
             unique: true,
+            trim:true,
+            lowercase: true,
         },
-        fullname: {type: String},
-        phone: {type: String},
-        address: {type: String},
+        fullname: {type: String, default:""},
+        phone: {type: String, default:""},
+        address: {type: String, default:""},
         role: {
             type: String,
             enum: ["ADMIN", "USER", "JEWELER"],
@@ -29,6 +31,7 @@ const userSchema = mongoose.Schema({
             enum: ["PENDING", "ACTIVE", "BLOCK"],
             default: "PENDING",
         },
-        avatar: {type: String},
-    }, {timeStamp: true}
-)
+        avatar: {type: String,default:null},
+    }, {timeStamp: true,collection: "users"}
+);
+export default mongoose.model("User",userSchema);
