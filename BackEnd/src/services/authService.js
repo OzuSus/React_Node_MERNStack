@@ -16,9 +16,6 @@ export function signJWT(payload){
 export async function registerService(data){
     const SALT_ROUNDS = 10;
     const {username, email, password, fullname, phone, address} = data;
-    if (!username || !email || !password || !fullname || !phone || !address){
-        throw new ApiError(400, "Vui long nhap day du thong tin");
-    }
     const isExisting = await User.findOne({$or: [{username}, {email}]});
     if (isExisting){
         throw new ApiError(400, "Email hoac Username da ton tai!");
