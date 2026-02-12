@@ -18,8 +18,8 @@ const userSchema = mongoose.Schema({
             trim:true,
             lowercase: true,
         },
-        fullname: {type: String, default:""},
-        phone: {type: String, default:""},
+        fullname: {type: String, required: true},
+        phone: {type: String, required: true},
         address: {type: String, default:""},
         role: {
             type: String,
