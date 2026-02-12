@@ -44,38 +44,43 @@ export async function registerService(data){
     await verifyToken.save();
     await sendVerificationEmail(email, token);
 }
-
 export async function loginService(data){
-    const {account, password} = data;
+    const { account, password } = data;
     if (!account || !password){
         throw new ApiError(400, "Vui long nhap day du thong tin dang nhap!");
     }
-    const query = account.includes('@') ? {email: account} : {username:account};
+
+    const query = account.includes('@') ? { email: account } : { username: account };
     const user = await User.findOne(query);
     if (!user){
-        throw new ApiError(404, "Ko tim thay tai khoan!");
+        throw new ApiError(401, "Tai khoan hoac mat khau khong dung!");
     }
     const matchPassword = await bcrypt.compare(password, user.password);
     if (!matchPassword){
-        throw new ApiError(401, "Sai mat khau!");
+        throw new ApiError(401, "Tai khoan hoac mat khau khong dung!");
     }
     if (user.status !== "ACTIVE"){
-        throw new ApiError(403, "Vui long xac thuc email trc khi dang nhap!");
+        throw new ApiError(403, "Vui long xac thuc email truoc khi dang nhap!");
     }
-    const jwt = signJWT({id: user._id, username: user.username, role: user.role});
+    const jwt = signJWT({
+        id: user._id,
+        username: user.username,
+        role: user.role
+    });
     return {
         jwt,
         user: {
             id: user._id,
             username: user.username,
             email: user.email,
-            phong: user.phone,
+            phone: user.phone,
             address: user.address,
             role: user.role,
             status: user.status,
         }
     };
 }
+
 
 export async function verifyEmailService(token){
     // const { token } = data.query.token;

@@ -39,7 +39,7 @@ export async function verifyEmail(req, res) {
         return res.send("Xác thực email thành công. Bạn có thể quay lại trang đăng nhập.");
     } catch (err) {
         console.error("verify error:", err);
-        return res.status(err.statusCode || 500).send("Lỗi server");
+        return res.status(err.statusCode || 500).send(err.message || "Lỗi server");
     }
 }
 
