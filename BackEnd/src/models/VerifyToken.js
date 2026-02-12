@@ -16,7 +16,7 @@ const VerifyTokenChema = mongoose.Schema(
             type: Date,
             required: true
         }
-    }, {timeStamp: true}
+    }, {timestamps: true}
 )
 
 export default mongoose.model("VerifyToken",VerifyTokenChema);

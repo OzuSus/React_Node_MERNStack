@@ -18,9 +18,9 @@ const userSchema = mongoose.Schema({
             trim:true,
             lowercase: true,
         },
-        fullname: {type: String, default:""},
-        phone: {type: String, default:""},
-        address: {type: String, default:""},
+        fullname: {type: String, required: true},
+        phone: {type: String, required: true},
+        address: {type: String, required: true},
         role: {
             type: String,
             enum: ["ADMIN", "USER", "JEWELER"],
@@ -32,6 +32,6 @@ const userSchema = mongoose.Schema({
             default: "PENDING",
         },
         avatar: {type: String,default:null},
-    }, {timeStamp: true,collection: "users"}
+    }, {timestamps: true,collection: "users"}
 );
 export default mongoose.model("User",userSchema);
