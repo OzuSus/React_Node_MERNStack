@@ -14,11 +14,12 @@ function signJWT(payload){
 
 export async function register(req,res) {
     try {
+        console.log("req.body:", req.body);
         const {username, email, password, fullname, phone, address} = req.body;
         if (!req.body){
             res.status(400).json({message: "vui long nhap day du thong tin"});
         }
-        const isExisting = User.findOne({$or: [{username}, {email}]});
+        const isExisting = await User.findOne({$or: [{username}, {email}]});
         if (isExisting){
             return res.status(409).json({message: "Email hoac Username da ton tai!"});
         }
@@ -39,7 +40,7 @@ export async function register(req,res) {
         const verifyToken = new VerifyToken(
             {token,
                 userId:user._id,
-                expireDate});
+                expiryDate:expireDate});
         await verifyToken.save();
         await sendVerificationEmail(email, token);
         return res.status(200).json({message: "Dang ky tai khoan thanh cong! Vui long xac thuc email"})
@@ -103,9 +104,9 @@ export async function verifyEmail(req, res) {
         await User.updateOne({ _id: record.userId }, { $set: { status: "ACTIVE" } });
         await VerifyToken.deleteOne({ _id: record._id });
 
-        if (process.env.FRONTEND_VERIFY_URL) {
-            return res.redirect(`${process.env.FRONTEND_VERIFY_URL}?verified=true`);
-        }
+        // if (process.env.FRONTEND_VERIFY_URL) {
+        //     return res.redirect(`${process.env.FRONTEND_VERIFY_URL}?verified=true`);
+        // }
         return res.send("Xác thực email thành công. Bạn có thể quay lại trang đăng nhập.");
     } catch (err) {
         console.error("verify error:", err);
