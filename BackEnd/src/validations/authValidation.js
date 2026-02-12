@@ -45,3 +45,12 @@ export const registerSchema = Joi.object({
             "string.empty": "Address khong duoc de trong"
         }),
 });
+
+export const loginSchema = Joi.object({
+    account: Joi.string()
+        .required()
+        .messages({"string.empty":"Email hoac ten dang nhap ko dc de trong!"}),
+    password: Joi.string()
+        .required()
+        .messages({"string.empty":"Mat khau ko dc de trong!"})
+})
