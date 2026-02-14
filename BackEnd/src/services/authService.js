@@ -41,31 +41,35 @@ export async function registerService(data){
     await verifyToken.save();
     await sendVerificationEmail(email, token);
 }
-export async function loginService(data){
-    const { account, password } = data;
-    if (!account || !password){
-        throw new ApiError(400, "Vui long nhap day du thong tin dang nhap!");
+export async function loginService(data) {
+    const { account, password } = data || {};
+    if (!account || !password) {
+        throw new ApiError(400, "Vui lòng nhập đầy đủ thông tin đăng nhập!");
     }
 
-    const query = account.includes('@') ? { email: account } : { username: account };
-    const user = await User.findOne(query);
-    if (!user){
-        throw new ApiError(401, "Tai khoan hoac mat khau khong dung!");
+    const query = account.includes("@") ? { email: account } : { username: account };
+    const user = await User.findOne(query).exec();
+    if (!user) {
+        throw new ApiError(401, "Tài khoản hoặc mật khẩu không đúng!");
     }
+
     const matchPassword = await bcrypt.compare(password, user.password);
-    if (!matchPassword){
-        throw new ApiError(401, "Tai khoan hoac mat khau khong dung!");
+    if (!matchPassword) {
+        throw new ApiError(401, "Tài khoản hoặc mật khẩu không đúng!");
     }
-    if (user.status !== "ACTIVE"){
-        throw new ApiError(403, "Vui long xac thuc email truoc khi dang nhap!");
+
+    if (user.status !== "ACTIVE") {
+        throw new ApiError(403, "Vui lòng xác thực email trước khi đăng nhập!");
     }
-    const jwt = signJWT({
+
+    const token = signJWT({
         id: user._id,
         username: user.username,
         role: user.role
     });
+
     return {
-        jwt,
+        token,
         user: {
             id: user._id,
             username: user.username,
@@ -73,14 +77,12 @@ export async function loginService(data){
             phone: user.phone,
             address: user.address,
             role: user.role,
-            status: user.status,
+            status: user.status
         }
     };
 }
 
-
 export async function verifyEmailService(token){
-    // const { token } = data.query.token;
     if (!token){
         throw new ApiError(400, "Token không hợp lệ");
     }
@@ -115,4 +117,12 @@ export async function checkAccountService(data){
         const user = await User.findOne({ username });
         return ({ exists: !!user });
     }
+}
+
+export async function meService(userId) {
+    const user = await User.findById(userId).select("-password").lean();
+    if (!user) {
+        throw new ApiError(404, "Khong tim thay user");
+    }
+    return user;
 }
