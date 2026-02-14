@@ -10,6 +10,9 @@ import {
     registerService,
     verifyEmailService,
 } from "../services/authService.js";
+import path from "path";
+import {fileURLToPath} from "url";
+import * as fs from "fs";
 
 
 export async function register(req,res,next) {
@@ -42,15 +45,26 @@ export async function login(req, res, next) {
 
 export async function verifyEmail(req, res, next) {
     try {
-        await verifyEmailService(req.query.token);
-        return res.send("Xác thực email thành công. Bạn có thể quay lại trang đăng nhập.");
+        const token = req.query.token;
+        const result = await verifyEmailService(token);
+
+        const successFile = fileURLToPath(new URL("../../public/verify_success.html", import.meta.url));
+        if (!fs.existsSync(successFile)) {
+            console.error("verify_success.html not found at:", successFile);
+            return res.status(500).json({ message: "Server error: verify_success.html not found" });
+        }
+        return res.sendFile(successFile);
     } catch (err) {
         console.error("verify error:", err);
-        // return res.status(err.statusCode || 500).send(err.message || "Lỗi server");
-        next(err);
+
+        const successFile = fileURLToPath(new URL("../../public/verify-failed.html", import.meta.url));
+        if (!fs.existsSync(successFile)) {
+            console.error("verify_failed.html not found at:", successFile);
+            return res.status(500).json({ message: "Server error: verify_success.html not found" });
+        }
+        return res.sendFile(successFile);
     }
 }
-
 export async function checkAccount(req, res) {
     try {
         const result =  await checkAccountService(req.body);
