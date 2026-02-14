@@ -6,7 +6,7 @@ import VerifyToken from "../models/VerifyToken.js";
 import {sendVerificationEmail} from "../services/EmailService.js";
 import {
     checkAccountService,
-    loginService,
+    loginService, meService,
     registerService,
     verifyEmailService,
 } from "../services/authService.js";
@@ -23,13 +23,19 @@ export async function register(req,res,next) {
     }
 }
 
-export async function login(req,res, next){
-    try{
-        const result = await loginService(req.body);
-        return res.status(200).json(result);
-    }catch (err){
+export async function login(req, res, next) {
+    try {
+        const { token, user } = await loginService(req.body);
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 1000 * 60 * 60 * 24 * 7
+        };
+        res.cookie("token", token, cookieOptions);
+        return res.status(200).json({ user });
+    } catch (err) {
         console.error("Ko the dang nhap!, loi server: ", err);
-        // return res.status(err.statusCode || 500).json({message: err.message || "Loi server:",err});
         next(err);
     }
 }
@@ -53,4 +59,18 @@ export async function checkAccount(req, res) {
         console.error("checkAccount error:", err);
         return res.status(500).json({ message: "Lỗi server" });
     }
+}
+export async function me(req, res, next) {
+    try {
+        const user = await meService(req.user.id);
+        return res.json(user);
+    } catch (err) {
+        next(err);
+    }
+}
+
+
+export function logout(req, res) {
+    res.clearCookie("token", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax" });
+    return res.json({ message: "Logged out" });
 }

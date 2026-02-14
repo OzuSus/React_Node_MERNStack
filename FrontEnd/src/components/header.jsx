@@ -8,13 +8,17 @@ import FavoriteTwoToneIcon from "@mui/icons-material/FavoriteTwoTone";
 import PersonIcon from "@mui/icons-material/Person";
 
 import {LoginRounded, LogoutRounded} from "@mui/icons-material";
+import {UserContext} from "../context/UserContext.jsx";
 
 export default function Header() {
     const [isMenuClicked, setIsMenuClicked] = useState(false);
+    const [isSearchclicked, setIsSearchedClicked] = useState(false);
+    const [inputValue, setInputValue] = useState("");
     const [category, setCategory] = useState("");
 
     const navigate = useNavigate();
 
+    const {user, userInfo, logout} = useContext(UserContext);
 
     const location = useLocation();
 
@@ -27,6 +31,7 @@ export default function Header() {
         navigate("/browse");
     };
     const handleLogout = () => {
+        logout();
         navigate("/login");
     };
     const handleScrollToSection = (sectionId) => {
