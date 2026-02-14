@@ -11,7 +11,7 @@ router.post("/register", limiter, validate(registerSchema), register);
 router.post("/login", limiter, validate(loginSchema), login);
 router.get("/verify", limiter, verifyEmail);
 router.get("/check-user", limiter, checkAccount);
-router.get("/me",requireAuth, me);
+router.get("/me", limiter,requireAuth, me);
 router.post("/logout", logout);
 
 export default router;
