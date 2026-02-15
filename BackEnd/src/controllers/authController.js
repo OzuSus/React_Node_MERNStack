@@ -67,7 +67,7 @@ export async function verifyEmail(req, res, next) {
 }
 export async function checkAccount(req, res) {
     try {
-        const result =  await checkAccountService(req.body);
+        const result =  await checkAccountService(req.query);
         return res.status(200).json(result);
     } catch (err) {
         console.error("checkAccount error:", err);

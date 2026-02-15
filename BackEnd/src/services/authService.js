@@ -109,7 +109,7 @@ export async function verifyEmailService(token){
 }
 
 export async function checkAccountService(data){
-    const { email, username } = data.query;
+    const { email, username } = data;
     if (!email && !username) {
         throw new ApiError(400, "Phải cung cấp email hoặc username");
     }
@@ -126,7 +126,7 @@ export async function checkAccountService(data){
 export async function meService(userId) {
     const user = await User.findById(userId).select("-password").lean();
     if (!user) {
-        throw new ApiError(404, "Khong tim thay user");
+        throw new ApiError(401, "UnAuthorized");
     }
     return user;
 }

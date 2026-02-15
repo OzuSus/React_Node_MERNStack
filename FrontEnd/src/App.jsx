@@ -6,10 +6,10 @@ import Home from "./pages/home/index.jsx";
 import Header from "./components/header.jsx";
 import Footer from "./components/Footer.jsx";
 import {UserProvider} from "./context/UserContext.jsx";
+import Register from "./pages/Register/index.jsx";
 
 function App() {
   return (
-      <UserProvider>
           <BrowserRouter>
               <Header/>
               <div className="mainApp">
@@ -17,11 +17,11 @@ function App() {
                       <Route path="/" element={<Home/>}/>
                       <Route path="/Home" element={<Home/>}/>
                       <Route path="/Login" element={<Login/>}/>
+                      <Route path="/Register" element={<Register/>}/>
                   </Routes>
               </div>
               <Footer/>
           </BrowserRouter>
-      </UserProvider>
   )
 }
 

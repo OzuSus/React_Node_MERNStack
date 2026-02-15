@@ -30,10 +30,11 @@ export default function Header() {
         setCategory(() => e.target.value);
         navigate("/browse");
     };
-    const handleLogout = () => {
-        logout();
+    const handleLogout = async () => {
+        await logout();
         navigate("/login");
     };
+
     const handleScrollToSection = (sectionId) => {
         if (location.pathname !== "/") {
             navigate("/", { state: { scrollTo: sectionId } });
