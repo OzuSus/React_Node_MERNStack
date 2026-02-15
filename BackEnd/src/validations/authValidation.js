@@ -18,13 +18,15 @@ export const registerSchema = Joi.object({
         }),
 
     password: Joi.string()
-        .pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/)
+        .min(8)
+        .pattern(/[A-Z]/, "chu in hoa")
+        .pattern(/\d/, "chu so")
+        .pattern(/[^A-Za-z\d]/, "ky tu dac biet")
         .required()
         .messages({
-            "string.pattern.base":
-                "Password phai co it nhat 8 ky tu, 1 chu in hoa, 1 so va 1 ky tu dac biet",
-            "string.empty":
-                "Password khong duoc de trong"
+            "string.empty": "Password khong duoc de trong",
+            "string.min": "Password phai co it nhat 8 ky tu",
+            "string.pattern.name": "Password phai co it nhat 1 {#name}"
         }),
 
     fullname: Joi.string()

@@ -6,6 +6,8 @@ import authRoutes from "./src/routes/auth.js"
 import userRoutes from "./src/routes/user.js"
 import {errorHandler} from "./src/middlewares/errorHandlerMiddleware.js";
 import cookieParser from "cookie-parser";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
@@ -14,11 +16,17 @@ app.use(cors({
     origin: "http://localhost:5173",
     credentials: true
 }));
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
+
 
 app.get("/", (req, res) => res.send("API running"));
 

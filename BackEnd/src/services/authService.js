@@ -39,7 +39,7 @@ export async function registerService(data){
             userId:user._id,
             expiryDate:expireDate});
     await verifyToken.save();
-    await sendVerificationEmail(email, token);
+    await sendVerificationEmail(email, username, token);
 }
 export async function loginService(data) {
     const { account, password } = data || {};
@@ -93,19 +93,23 @@ export async function verifyEmailService(token){
     const now = new Date();
     if (record.expiryDate < now) {
         await VerifyToken.deleteOne({ _id: record._id });
-        throw new ApiError(400, "Token đã hết hạn");
+        throw new ApiError(410, "Token đã hết hạn");
     }
+    const user = await User.findById(record.userId).exec();
+    if (!user) {
+        await VerifyToken.deleteOne({ _id: record._id });
+        throw new ApiError(404, "User không tồn tại");
+    }
+    user.status = "ACTIVE";
+    await user.save();
 
-    await User.updateOne({ _id: record.userId }, { $set: { status: "ACTIVE" } });
     await VerifyToken.deleteOne({ _id: record._id });
+    return { id: user._id.toString(), username: user.username };
 
-    // if (process.env.FRONTEND_VERIFY_URL) {
-    //     return res.redirect(`${process.env.FRONTEND_VERIFY_URL}?verified=true`);
-    // }
 }
 
 export async function checkAccountService(data){
-    const { email, username } = data.query;
+    const { email, username } = data;
     if (!email && !username) {
         throw new ApiError(400, "Phải cung cấp email hoặc username");
     }
@@ -122,7 +126,7 @@ export async function checkAccountService(data){
 export async function meService(userId) {
     const user = await User.findById(userId).select("-password").lean();
     if (!user) {
-        throw new ApiError(404, "Khong tim thay user");
+        throw new ApiError(401, "UnAuthorized");
     }
     return user;
 }

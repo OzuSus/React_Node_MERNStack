@@ -5,7 +5,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 import {useContext, useEffect, useState} from "react";
-import {NavLink, useNavigate} from "react-router-dom";
+import {NavLink, useNavigate, Link} from "react-router-dom";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {UserContext} from "../../context/UserContext";
 
@@ -91,9 +91,7 @@ export default function Login() {
                         </div>
                         <div className="signUp">
                             <p> Don't have an account?{" "}
-                                <a href="/Register">
-                                    Sign Up...
-                                </a>{" "}
+                                <Link to="/register">Sign Up</Link>{" "}
                             </p>
                         </div>
                     </form>

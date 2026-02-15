@@ -7,6 +7,10 @@ export const UserProvider = ({ children }) => {
     const [userInfo, setUserInfo] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [allUser, setAllUser] = useState([])
+    useEffect(() => {
+        console.log("UserProvider mounted");
+    }, []);
+
 
     useEffect(() => {
         const fetchCurrentUser = async () => {
