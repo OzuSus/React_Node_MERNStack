@@ -55,14 +55,14 @@ export async function verifyEmail(req, res, next) {
         }
         return res.sendFile(successFile);
     } catch (err) {
-        console.error("verify error:", err);
-
-        const successFile = fileURLToPath(new URL("../../public/verify-failed.html", import.meta.url));
-        if (!fs.existsSync(successFile)) {
-            console.error("verify_failed.html not found at:", successFile);
-            return res.status(500).json({ message: "Server error: verify_success.html not found" });
+        let fileName = "verify-failed.html";
+        if (err.statusCode === 410) {
+            fileName = "verify-expired.html";
         }
-        return res.sendFile(successFile);
+        const filePath = fileURLToPath(
+            new URL(`../../public/${fileName}`, import.meta.url)
+        );
+        return res.sendFile(filePath);
     }
 }
 export async function checkAccount(req, res) {

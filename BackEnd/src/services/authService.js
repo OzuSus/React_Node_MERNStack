@@ -93,7 +93,7 @@ export async function verifyEmailService(token){
     const now = new Date();
     if (record.expiryDate < now) {
         await VerifyToken.deleteOne({ _id: record._id });
-        throw new ApiError(400, "Token đã hết hạn");
+        throw new ApiError(410, "Token đã hết hạn");
     }
     const user = await User.findById(record.userId).exec();
     if (!user) {
