@@ -55,3 +55,39 @@ a {
 a:hover {
     background-color: #d35400;
 }
+button {
+    --width: 200px;
+    --height: 60px;
+
+    width: var(--width);
+    height: var(--height);
+
+    font-size: 16px;
+    font-weight: 500;
+
+    margin: 20px auto 0;
+    background-color: #f39c12;
+    color: #ffffff;
+
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+/* Hover */
+button:hover {
+    background-color: #d35400;
+}
+
+/* Khi nhấn */
+button:active {
+    transform: scale(0.97);
+}
+
+/* Khi disabled (nếu sau này bạn dùng) */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
