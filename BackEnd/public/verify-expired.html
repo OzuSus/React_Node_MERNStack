@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="/styles/reset.css">
     <link rel="stylesheet" href="/styles/base.css">
     <link rel="stylesheet" href="/styles/verify_expired.css">
-    <link a rel="stylesheet" href="D:\Ozu_Project\MERNStack\BackEnd\public\styles\verify_success.css">
+    <link rel="stylesheet" href="/styles/loader.css">
+<!--    <link rel="stylesheet" href="/styles/verify_success.css">-->
 </head>
 <body>
 <main>
@@ -16,7 +17,53 @@
     </div>
     <h1>Liên kết đã hết hạn</h1>
     <p>Liên kết xác thực đã hết hạn. Vui lòng đăng ký lại để nhận email mới.</p>
-    <a href="http://localhost:5173/register" class="button button--hover">Đăng ký lại</a>
+    <button onclick="resend()">Gửi lại email xác thực</button>
 </main>
+<div id="loader" class="overlay_loader">
+    <div class="cssload-loader">
+        <div class="cssload-side"></div>
+        <div class="cssload-side"></div>
+        <div class="cssload-side"></div>
+        <div class="cssload-side"></div>
+        <div class="cssload-side"></div>
+        <div class="cssload-side"></div>
+        <div class="cssload-side"></div>
+        <div class="cssload-side"></div>
+    </div>
+</div>
+
+<script>
+    async function resend() {
+
+        const loader = document.getElementById("loader");
+        loader.classList.add("active");
+
+        const params = new URLSearchParams(window.location.search);
+        const email = params.get("email");
+
+        try {
+            const res = await fetch("/auth/resend-verification", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message);
+            }
+
+            alert("Đã gửi lại email xác thực!");
+
+        } catch (err) {
+            alert(err.message);
+        } finally {
+            loader.classList.remove("active");
+        }
+    }
+</script>
 </body>
 </html>

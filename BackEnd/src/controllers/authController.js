@@ -7,12 +7,13 @@ import {sendVerificationEmail} from "../services/EmailService.js";
 import {
     checkAccountService,
     loginService, meService,
-    registerService,
+    registerService, resendVerificationService,
     verifyEmailService,
 } from "../services/authService.js";
 import path from "path";
 import {fileURLToPath} from "url";
 import * as fs from "fs";
+import {ApiError} from "../utils/ApiError.js";
 
 
 export async function register(req,res,next) {
@@ -46,25 +47,30 @@ export async function login(req, res, next) {
 export async function verifyEmail(req, res, next) {
     try {
         const token = req.query.token;
-        const result = await verifyEmailService(token);
+        await verifyEmailService(token);
 
-        const successFile = fileURLToPath(new URL("../../public/verify_success.html", import.meta.url));
-        if (!fs.existsSync(successFile)) {
-            console.error("verify_success.html not found at:", successFile);
-            return res.status(500).json({ message: "Server error: verify_success.html not found" });
-        }
-        return res.sendFile(successFile);
-    } catch (err) {
-        let fileName = "verify-failed.html";
-        if (err.statusCode === 410) {
-            fileName = "verify-expired.html";
-        }
-        const filePath = fileURLToPath(
-            new URL(`../../public/${fileName}`, import.meta.url)
+        const successFile = fileURLToPath(
+            new URL("../../public/verify_success.html", import.meta.url)
         );
-        return res.sendFile(filePath);
+
+        return res.sendFile(successFile);
+
+    } catch (err) {
+
+        if (err.statusCode === 410 && err.email) {
+            return res.redirect(
+                `/verify-expired.html?email=${err.email}`
+            );
+        }
+
+        const failedFile = fileURLToPath(
+            new URL("../../public/verify-failed.html", import.meta.url)
+        );
+
+        return res.sendFile(failedFile);
     }
 }
+
 export async function checkAccount(req, res) {
     try {
         const result =  await checkAccountService(req.query);
@@ -82,6 +88,18 @@ export async function me(req, res, next) {
         next(err);
     }
 }
+export async function resendVerification(req, res, next) {
+    try {
+        const { email } = req.body;
+        await resendVerificationService(email);
+        return res.status(200).json({
+            message: "Email xác thực mới đã được gửi."
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
 
 
 export function logout(req, res) {

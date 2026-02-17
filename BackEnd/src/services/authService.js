@@ -16,9 +16,24 @@ export function signJWT(payload){
 export async function registerService(data){
     const SALT_ROUNDS = 10;
     const {username, email, password, fullname, phone, address} = data;
-    const isExisting = await User.findOne({$or: [{username}, {email}]});
-    if (isExisting){
-        throw new ApiError(400, "Email hoac Username da ton tai!");
+    const existingUser = await User.findOne({
+        $or: [{ username }, { email }]
+    });
+    if (existingUser) {
+        if (existingUser.status === "PENDING") {
+            const token = crypto.randomBytes(32).toString("hex");
+            const expireDate = new Date();
+            expireDate.setHours(expireDate.getHours() + 24);
+            await VerifyToken.findOneAndUpdate(
+                { userId: existingUser._id },
+                { token, expiryDate: expireDate },
+                { upsert: true }
+            );
+            await sendVerificationEmail(existingUser.email, existingUser.username, token);
+            throw new ApiError(400, "Tài khoản đã tồn tại nhưng chưa xác thực. Chúng tôi đã gửi lại email xác thực.");
+        }
+
+        throw new ApiError(400, "Email hoặc Username đã tồn tại!");
     }
     const hashPassword = await bcrypt.hash(password, SALT_ROUNDS);
     const user = new User({
@@ -92,8 +107,11 @@ export async function verifyEmailService(token){
     }
     const now = new Date();
     if (record.expiryDate < now) {
+        const user = await User.findById(record.userId);
         await VerifyToken.deleteOne({ _id: record._id });
-        throw new ApiError(410, "Token đã hết hạn");
+        const error = new ApiError(410, "Token đã hết hạn");
+        error.email = user.email;
+        throw error;
     }
     const user = await User.findById(record.userId).exec();
     if (!user) {
@@ -105,7 +123,25 @@ export async function verifyEmailService(token){
 
     await VerifyToken.deleteOne({ _id: record._id });
     return { id: user._id.toString(), username: user.username };
+}
 
+export async function resendVerificationService(email) {
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw new ApiError(404, "Email không tồn tại");
+    }
+    if (user.status === "ACTIVE") {
+        throw new ApiError(400, "Tài khoản đã được xác thực");
+    }
+    const token = crypto.randomBytes(32).toString("hex");
+    const expireDate = new Date();
+    expireDate.setHours(expireDate.getHours() + 24);
+    await VerifyToken.findOneAndUpdate(
+        { userId: user._id },
+        { token, expiryDate: expireDate },
+        { upsert: true }
+    );
+    await sendVerificationEmail(user.email, user.username, token);
 }
 
 export async function checkAccountService(data){
