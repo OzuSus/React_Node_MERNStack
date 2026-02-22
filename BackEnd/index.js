@@ -4,6 +4,8 @@ import connectDB from "./src/config/db.js";
 import cors from "cors"
 import authRoutes from "./src/routes/auth.js"
 import userRoutes from "./src/routes/user.js"
+import productRoutes from "./src/routes/product.js"
+import categoryRoutes from "./src/routes/category.js"
 import {errorHandler} from "./src/middlewares/errorHandlerMiddleware.js";
 import cookieParser from "cookie-parser";
 import path from "path";
@@ -26,12 +28,13 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
+app.use("/products", productRoutes);
+app.use("/categories", categoryRoutes);
 
 
 app.get("/", (req, res) => res.send("API running"));
 
 app.use(errorHandler);
-
 
 const PORT = process.env.PORT || 5000;
 connectDB();
