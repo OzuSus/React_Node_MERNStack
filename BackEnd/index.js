@@ -10,7 +10,6 @@ import {errorHandler} from "./src/middlewares/errorHandlerMiddleware.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
-import product from "./src/models/Product.js";
 
 dotenv.config();
 
@@ -30,7 +29,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/products", productRoutes);
-app.use("/categorys", categoryRoutes);
+app.use("/categories", categoryRoutes);
 
 
 app.get("/", (req, res) => res.send("API running"));

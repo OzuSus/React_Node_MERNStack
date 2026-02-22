@@ -42,13 +42,21 @@ export const productSchema = Joi.object({
             "any.required": "So luong khong duoc de trong",
         }),
     id_category: Joi.string()
+        .hex()
+        .length(24)
         .required()
         .messages({
             "string.empty": "Thong tin phan loai khong duoc de trong",
+            "string.hex": "Thong tin phan loai phai la ma ObjectId hop le (hex)",
+            "string.length": "Thong tin phan loai phai co do dai 24 ky tu",
         }),
     id_jeweler: Joi.string()
+        .hex()
+        .length(24)
         .required()
         .messages({
             "string.empty": "Thong tin tho kim hoan khong duoc de trong",
+            "string.hex": "Thong tin tho kim hoan phai la ma ObjectId hop le (hex)",
+            "string.length": "Thong tin tho kim hoan phai co do dai 24 ky tu",
         }),
 });

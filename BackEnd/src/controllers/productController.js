@@ -4,13 +4,13 @@ export async function getAllProduct(req,res,next) {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
-        const {products, total} = await getAllProductService(page, limit);
+        const {product, total} = await getAllProductService(page, limit);
         return res.status(200).json({
             total,
             page,
             limit,
             totalPages: Math.ceil(total / limit),
-            products
+            product
         })
     }catch (err){
         next(err)
