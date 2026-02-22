@@ -6,3 +6,8 @@ export async function getAllProductService(page, limit) {
     const total = await Product.countDocuments({});
     return {product, total}
 }
+
+export async function createNewProductService(productData) {
+    const newProduct = await Product.create(productData);
+    return newProduct;
+}
