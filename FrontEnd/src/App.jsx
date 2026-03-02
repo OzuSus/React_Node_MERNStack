@@ -7,9 +7,11 @@ import Header from "./components/header.jsx";
 import Footer from "./components/Footer.jsx";
 import {UserProvider} from "./context/UserContext.jsx";
 import Register from "./pages/Register/index.jsx";
+import {CategoryProvider} from "./context/CategoryContext.jsx";
 
 function App() {
   return (
+      <CategoryProvider>
           <BrowserRouter>
               <Header/>
               <div className="mainApp">
@@ -22,6 +24,7 @@ function App() {
               </div>
               <Footer/>
           </BrowserRouter>
+      </CategoryProvider>
   )
 }
 

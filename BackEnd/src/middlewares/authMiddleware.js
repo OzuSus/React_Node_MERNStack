@@ -13,3 +13,9 @@ export function requireAuth(req, res, next) {
         return res.status(401).json({ message: "Token ko hop le" });
     }
 }
+export function requireAdmin(req, res, next) {
+    if (req.user?.role !== "ADMIN") {
+        return res.status(403).json({ message: "Forbidden: Chi admin moi co quyen truy cap" });
+    }
+    next();
+}

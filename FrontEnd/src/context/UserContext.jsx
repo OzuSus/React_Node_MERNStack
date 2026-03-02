@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-
+import Cookies from "js-cookie";
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -7,40 +7,49 @@ export const UserProvider = ({ children }) => {
     const [userInfo, setUserInfo] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [allUser, setAllUser] = useState([])
+
     useEffect(() => {
         console.log("UserProvider mounted");
     }, []);
 
-
     useEffect(() => {
-        const fetchCurrentUser = async () => {
-            try {
-                const res = await fetch("http://localhost:5000/auth/me", {
-                    method: "GET",
-                    credentials: "include" // send cookie
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    setUser(data);
-                    setUserInfo(data);
-                } else {
-                    setUser(null);
-                }
-            } catch (err) {
-                console.error("Error fetching current user:", err);
-                setUser(null);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchCurrentUser();
+        // const cachedUser = localStorage.getItem("user");
+        const token = Cookies.get("token");
+        if (token) {
+            // setUser(JSON.parse(cachedUser));
+            // setUserInfo(JSON.parse(cachedUser));
+            setIsLoading(false);
+        } else {
+            fetchCurrentUser();
+        }
     }, []);
 
-    const login = (userData) => {
-        localStorage.setItem("user", JSON.stringify(userData));
-        setUser(userData);
-        setUserInfo(userData);
+    const fetchCurrentUser = async () => {
+        try {
+            const res = await fetch("http://localhost:5000/auth/me", {
+                method: "GET",
+                credentials: "include" // send cookie
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setUser(data);
+                setUserInfo(data);
+            } else {
+                setUser(null);
+            }
+        } catch (err) {
+            console.error("Error fetching current user:", err);
+            setUser(null);
+        } finally {
+            setIsLoading(false);
+        }
     };
+
+    // const login = (userData) => {
+    //     localStorage.setItem("user", JSON.stringify(userData));
+    //     setUser(userData);
+    //     setUserInfo(userData);
+    // };
 
     const logout = async () => {
         try {
@@ -51,7 +60,7 @@ export const UserProvider = ({ children }) => {
         } catch (err) {
             console.error("Logout error:", err);
         }
-        localStorage.removeItem("user");
+        // localStorage.removeItem("user");
         setUser(null);
         setUserInfo(null);
     };
@@ -72,7 +81,7 @@ export const UserProvider = ({ children }) => {
 
 
     return (
-        <UserContext.Provider value={{ user, userInfo, login, logout, isLoading, fetchUserDetail, allUser}}>
+        <UserContext.Provider value={{ user, userInfo, logout, isLoading, fetchUserDetail, allUser}}>
             {children}
         </UserContext.Provider>
     );
