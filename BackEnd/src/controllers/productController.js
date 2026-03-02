@@ -1,4 +1,4 @@
-import {createNewProductService, getAllProductService} from "../services/productService.js";
+import {createNewProductService, getAllProductService, getProductByTagService} from "../services/productService.js";
 
 export async function getAllProduct(req,res,next) {
     try {
@@ -22,6 +22,16 @@ export async function createNewProduct(req,res,next) {
         const productData = req.body;
         const newProduct = await createNewProductService(productData);
         return res.status(200).json({message: "Tao San pham moi thanh cong", product: newProduct})
+    }catch (err){
+        next(err)
+    }
+}
+
+export async function getProductByTag(req,res,next) {
+    try {
+        const tag = req.query.tag;
+        const products = await getProductByTagService(tag);
+        return res.status(200).json({products})
     }catch (err){
         next(err)
     }

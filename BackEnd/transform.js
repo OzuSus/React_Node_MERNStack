@@ -14,6 +14,9 @@ const DEFAULT_JEWELER = "69948292121cbf2246108cfc";
 const transformed = raw.rows.map(p => ({
     name: p.name?.trim(),
     price: Number(p.prize),
+    tag: 'NEW',
+    rating: 0,
+    review: 0,
     description: p.description?.trim(),
     image: p.image?.trim(),
     quantity: 200,

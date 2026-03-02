@@ -17,3 +17,8 @@ export async function createNewProductService(productData) {
     const newProduct = await Product.create(productData);
     return newProduct;
 }
+
+export async function getProductByTagService(tag) {
+    const products = await Product.find({tag: tag});
+    return products;
+}

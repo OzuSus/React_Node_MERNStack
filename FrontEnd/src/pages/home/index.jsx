@@ -1,8 +1,9 @@
 import "./home.css";
 import {NavLink, useLocation, useNavigate} from "react-router-dom";
-import ProductCard from "../../components/ProductCard.jsx";
+import ProductCard from "../../components/ProductCard";
 import {useContext, useEffect, useState} from "react";
 import axios from "axios";
+import {CategoryContext} from "../../context/CategoryContext";
 
 export default function Home() {
     const navigate = useNavigate();
@@ -11,8 +12,30 @@ export default function Home() {
 
     const [trendingProducts, setTrendingProducts] = useState([]);
     const [newproducts, setNewProducts] = useState([]);
+    const {categoryMap} = useContext(CategoryContext);
 
+    useEffect(() => {
+        axios.get("http://localhost:5000/products/tag", {
+            params: {tag: "HOT"}
+        })
+            .then(response => {
+                setTrendingProducts(response.data.products);
+            })
+            .catch(error => {
+                console.error("Error fetching trending products:", error);
+            });
 
+        // Fetch new products
+        axios.get("http://localhost:5000/products/tag", {
+            params: {tag: "NEW"}
+        })
+            .then(response => {
+                setNewProducts(response.data.products);
+            })
+            .catch(error => {
+                console.error("Error fetching new products:", error);
+            });
+    }, []);
     useEffect(() => {
         if (location.state?.scrollTo) {
             const sectionId = location.state.scrollTo;
@@ -94,16 +117,16 @@ export default function Home() {
             <section className="ShopByCategory" id="category">
                 <h3 className="home__title">SHOP BY CATEGORY</h3>
                 <p>Browse through your favorite categories. we have got them all!</p>
-                {/*<div className="categoryBox">*/}
-                {/*    {Object.entries(categoryMap).map(([id, name]) => (*/}
-                {/*        <div className="className" key={id}>*/}
-                {/*            <NavLink to={`/shop`}>*/}
-                {/*                <img src={`/assets/categoryIcon/${name}.png`} alt={name}/>*/}
-                {/*                <p>{name}</p>*/}
-                {/*            </NavLink>*/}
-                {/*        </div>*/}
-                {/*    ))}*/}
-                {/*</div>*/}
+                <div className="categoryBox">
+                    {Object.entries(categoryMap).map(([id, name]) => (
+                        <div className="className" key={id}>
+                            <NavLink to={`/shop`}>
+                                <img src={`/assets/categoryIcon/${name}.png`} alt={name}/>
+                                <p>{name}</p>
+                            </NavLink>
+                        </div>
+                    ))}
+                </div>
             </section>
             <section className="whyUs" id="business">
                 <p>BEST IN BUSINESS</p>

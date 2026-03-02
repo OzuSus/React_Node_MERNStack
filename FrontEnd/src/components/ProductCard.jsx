@@ -11,6 +11,8 @@ import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarHalfIcon from '@mui/icons-material/StarHalf';
 import Loader from "./Loader";
+import {CategoryContext} from "../context/CategoryContext.jsx";
+import {UserContext} from "../context/UserContext.jsx";
 
 
 export default function ProductCard({item}) {
@@ -30,8 +32,7 @@ export default function ProductCard({item}) {
     const [isFavorite, setIsFavorite] = useState(false);
     const [categoryName, setCategoryName] = useState("");
 
-    const { addToCart } = useContext(CartContext);
-    const { addToFavorite, isInWishList, deleteProductInFavorite, categoryNames } = useContext(FavoriteContext);
+
     const { categoryMap } = useContext(CategoryContext);
     const { user } = useContext(UserContext);
 
@@ -42,44 +43,7 @@ export default function ProductCard({item}) {
             setCategoryName(categoryMap[categoryID] || "N/A");
         }
     }, [categoryMap, categoryID]);
-    useEffect(() => {
-        const fetchIsFavorite = async () => {
-            if (user) {
-                const result = await isInWishList(user.id, id);
-                setIsFavorite(result);
-            }
-        };
-        fetchIsFavorite();
-    }, [user, id, isInWishList]);
 
-    const handleAddToCart = () => {
-        if (!user) {
-            showLoginRequiredDialog().then((result) => {
-                if (result.isConfirmed) {
-                    navigate("/login");
-                }
-            });
-            return;
-        }
-        addToCart(id, user.id);
-    };
-    const handleFavoriteToggle = async () => {
-        if (!user) {
-            showLoginRequiredDialog().then((result) => {
-                if (result.isConfirmed) {
-                    navigate("/login");
-                }
-            });
-            return;
-        }
-        if (isFavorite) {
-            await deleteProductInFavorite(user.id, id);
-            setIsFavorite(false);
-        } else {
-            await addToFavorite(user.id, id);
-            setIsFavorite(true);
-        }
-    };
 
     return (
         <div className="ProductCard">
@@ -115,20 +79,18 @@ export default function ProductCard({item}) {
                 </div>
             </NavLink>
             <div className="button">
-                <div className="favorite" title={isFavorite ? "Remove from WishList" : "Add to WishList"}
-                     onClick={handleFavoriteToggle}>
+                <div className="favorite" title={isFavorite ? "Remove from WishList" : "Add to WishList"}>
                     {isFavorite ? <FavoriteRoundedIcon/> : <FavoriteTwoToneIcon/>}
                 </div>
             </div>
 
             <div className="buttons">
-                <div className="addToCartButton" title="Add to Cart" onClick={handleAddToCart}>
+                <div className="addToCartButton" title="Add to Cart" >
                     <AddShoppingCartIcon/>
                 </div>
             </div>
-            <tb>
-                <button onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
-            </tb>
+
+                <button >Thêm vào giỏ hàng</button>
         </div>
 
     );
