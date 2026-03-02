@@ -16,7 +16,7 @@ export const CategoryProvider = ({ children }) => {
                 const categories = response.data;
                 const map = {};
                 categories.forEach(cat => {
-                    map[cat.id] = cat.name;
+                    map[cat._id] = cat.name;
                 });
                 setCategoryMap(map);
                 setCategoryList(categories);
