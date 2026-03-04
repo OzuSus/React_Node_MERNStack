@@ -13,15 +13,7 @@ export const UserProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        // const cachedUser = localStorage.getItem("user");
-        const token = Cookies.get("token");
-        if (token) {
-            // setUser(JSON.parse(cachedUser));
-            // setUserInfo(JSON.parse(cachedUser));
-            setIsLoading(false);
-        } else {
-            fetchCurrentUser();
-        }
+        fetchCurrentUser();
     }, []);
 
     const fetchCurrentUser = async () => {
@@ -45,11 +37,10 @@ export const UserProvider = ({ children }) => {
         }
     };
 
-    // const login = (userData) => {
-    //     localStorage.setItem("user", JSON.stringify(userData));
-    //     setUser(userData);
-    //     setUserInfo(userData);
-    // };
+    const login = (userData) => {
+        setUser(userData);
+        setUserInfo(userData);
+    };
 
     const logout = async () => {
         try {
@@ -81,7 +72,7 @@ export const UserProvider = ({ children }) => {
 
 
     return (
-        <UserContext.Provider value={{ user, userInfo, logout, isLoading, fetchUserDetail, allUser}}>
+        <UserContext.Provider value={{ user, userInfo, login, logout, isLoading, fetchUserDetail, allUser}}>
             {children}
         </UserContext.Provider>
     );

@@ -6,6 +6,7 @@ import authRoutes from "./src/routes/auth.js"
 import userRoutes from "./src/routes/user.js"
 import productRoutes from "./src/routes/product.js"
 import categoryRoutes from "./src/routes/category.js"
+import favoriteRoutes from "./src/routes/favorite.js"
 import {errorHandler} from "./src/middlewares/errorHandlerMiddleware.js";
 import cookieParser from "cookie-parser";
 import path from "path";
@@ -30,6 +31,7 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/products", productRoutes);
 app.use("/categories", categoryRoutes);
+app.use("/favorite", favoriteRoutes);
 
 
 app.get("/", (req, res) => res.send("API running"));
