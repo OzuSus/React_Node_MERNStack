@@ -1,6 +1,6 @@
 import {
     addFavoriteProductService,
-    getFavoriteProductOfUserService,
+    getFavoriteProductOfUserService, isInWishLishService,
     removeFavoriteProductService
 } from "../services/favoriteService.js";
 
@@ -8,6 +8,17 @@ export async function getFavoriteProductOfUser(req,res,next) {
     try {
         const favoriteProduct = await getFavoriteProductOfUserService(req.user.id);
         return res.status(200).json(favoriteProduct);
+    }catch (err){
+        next(err);
+    }
+}
+
+export async function isInWishLish(req,res,next) {
+    try {
+        const userId = req.user.id;
+        const productId = req.body.id_product;
+        const isInWishLish = await isInWishLishService(userId, productId);
+        return res.status(200).json({isInWishLish});
     }catch (err){
         next(err);
     }

@@ -15,16 +15,12 @@ export const FavoriteProvider = ({children}) => {
             const response = await fetch("http://localhost:5000/favorite",{
                 method: "GET",
                 credentials: "include",
-                // headers: {
-                //     "Content-Type": "application/json"
-                // }
             });
-            const items = response.json();
+            const items = await response.json();
             setFavoriteItems(items);
 
-            // Chỉ khi favoriteItems được lấy xong mới tiếp tục xử lý categoryNames
             const categoryPromises = items.map(item =>
-                axios.get(`http://localhost:5000/api/categories/${item.id_product.id_category}`)
+                axios.get(`http://localhost:5000/categories/${item.id_product.id_category}`)
             );
             const categoryResponses = await Promise.all(categoryPromises);
 
@@ -41,13 +37,22 @@ export const FavoriteProvider = ({children}) => {
 
     const isInWishList = async (userId, productId) => {
         try {
-            const response = await axios.get("http://localhost:8080/api/favorites/isInWishList", {
-                params: {
-                    userId,
-                    productId
-                }
+            const response = await fetch("http://localhost:5000/favorite/isInWishLish", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ id_product: productId })
             });
-            return response.data;
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("API Error:", errorData.message);
+                return { isInWishList: false };
+            }
+            const data = await response.json(); // Parse the JSON response
+            return data;
         } catch (error) {
             console.error("Lỗi kiểm tra yêu thích:", error);
             return false;
@@ -55,12 +60,22 @@ export const FavoriteProvider = ({children}) => {
     };
 
     const addToFavorite = async (userId, productId) => {
+        console.log("Product ID:", productId);
         const result = await showConfirmDialog("Bạn có muốn thêm vào yêu thích?");
         if (result.isConfirmed) {
             try {
-                await axios.post("http://localhost:8080/api/favorites/add", null, {
-                    params: { userId: userId, productId: productId}
+                const response =  await fetch("http://localhost:5000/favorite/", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ id_product: productId })
                 });
+                if (!response.ok) {
+                    const errorData = await response.json(); // Parse the error response
+                    throw new Error(errorData.message || "Unknown error occurred");
+                }
                 await showSuccessDialog("Thành công", "Đã thêm vào yêu thích");
                 await fetchFavoriteItems(userId);
             } catch (error) {
@@ -77,9 +92,18 @@ export const FavoriteProvider = ({children}) => {
         const result = await showConfirmDialog("Bạn có chắc muốn xóa sản phẩm khỏi yêu thích?", "warning");
         if (result.isConfirmed) {
             try {
-                await axios.delete("http://localhost:8080/api/favorites/delete", {
-                    params: {userId: userId, productId: productId}
+                const response = await fetch("http://localhost:5000/favorite/", {
+                    method: "DELETE",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ id_product: productId })
                 });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || "Unknown error occurred");
+                }
                 await showSuccessDialog("Thành công", "Đã xóa sản phẩm khỏi yêu thích");
                 await fetchFavoriteItems(userId);
             } catch (error) {
@@ -87,7 +111,6 @@ export const FavoriteProvider = ({children}) => {
                 await showErrorDialog("Lỗi", "Không thể xóa sản phẩm trong yêu thích");
             }
         } else {
-            // Người dùng đã huỷ => không làm gì cả
         }
 
     };

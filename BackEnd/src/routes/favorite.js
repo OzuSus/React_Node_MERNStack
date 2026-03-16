@@ -1,7 +1,7 @@
 import express from "express";
 import {
     addFavoriteProduct,
-    getFavoriteProductOfUser,
+    getFavoriteProductOfUser, isInWishLish,
     removeFavoriteProduct
 } from "../controllers/favoriteController.js";
 import {requireAdmin, requireAuth} from "../middlewares/authMiddleware.js";
@@ -12,6 +12,7 @@ import {favoriteSchema} from "../validations/favoriteValidation.js";
 const router = express.Router();
 
 router.get("/", requireAuth, limiter, getFavoriteProductOfUser);
+router.post("/isInWishLish", requireAuth, validate(favoriteSchema), isInWishLish);
 router.post("/", requireAuth, validate(favoriteSchema) ,limiter, addFavoriteProduct);
 router.delete("/", requireAuth, validate(favoriteSchema) ,limiter, removeFavoriteProduct);
 

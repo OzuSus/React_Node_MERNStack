@@ -20,6 +20,12 @@ export async function addFavoriteProductService(userId, productId) {
     return newFavorite;
 }
 
+export async function isInWishLishService(userId, productId) {
+    const existingFavorite = await Favorite.findOne({id_user: userId, id_product: productId});
+    return !!existingFavorite;
+
+}
+
 export async function removeFavoriteProductService(userId, productId) {
     const existingFavorite = await Favorite.findOne({id_user: userId, id_product: productId});
     if (!existingFavorite) {

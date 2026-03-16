@@ -1,4 +1,5 @@
 import "./favorite.css";
+import "../Cart/cart.css";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {NavLink, useNavigate} from "react-router-dom";
 import {FavoriteContext} from "../../context/FavoriteContext";
@@ -64,14 +65,14 @@ export default function Favorite() {
                                     </thead>
                                     <tbody className="cart__items">
                                     {favoriteItems.map((item) => (
-                                        <tr className="cart__item" key={item.id}>
+                                        <tr className="cart__item" key={item.id_product._id}>
                                             <td className="product__item">
                                                 <div className="product__content">
                                                     <a className="product__image" href="#">
                                                         <img
                                                             src={
-                                                                item.image?.startsWith("http")
-                                                                    ? item.image
+                                                                item.id_product.image?.startsWith("http")
+                                                                    ? item.id_product.image
                                                                     : `http://localhost:8080/uploads/${item.image || "assets/stonesjewel.jpg"}`
                                                             }
                                                             alt="Product"
@@ -79,17 +80,17 @@ export default function Favorite() {
                                                     </a>
 
                                                     <div className="order__product--info">
-                                                        <a href="#" className="product__name">{item.name}</a>
-                                                        <p className="order__color">Loại: {categoryNames[item.categoryID] || "Không xác định"}</p>
+                                                        <a href="#" className="product__name">{item.id_product.name}</a>
+                                                        <p className="order__color">Loại: {categoryNames[item.id_product.id_category] || "Không xác định"}</p>
                                                         <ul className="order__size--specification">
-                                                            <li>Mô tả: {item.description || ""}</li>
+                                                            <li>Mô tả: {item.id_product.description || ""}</li>
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="remove__action">
                                                 <button type="button" className="remove__item"
-                                                        onClick={() => handleDeleteProductInFavorite(item.id)}>
+                                                        onClick={() => handleDeleteProductInFavorite(item.id_product._id)}>
                                                     <DeleteForeverIcon fontSize="small"/>
                                                 </button>
                                             </td>

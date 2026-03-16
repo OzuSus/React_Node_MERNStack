@@ -12,6 +12,7 @@ import Register from "./pages/Register/index.jsx";
 import {CategoryProvider} from "./context/CategoryContext.jsx";
 import {FavoriteProvider} from "./context/FavoriteContext.jsx";
 import React from "react";
+// import Cart from "./pages/Cart/index.jsx";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
                       <Routes>
                           <Route path="/" element={<Home/>}/>
                           <Route path="/Home" element={<Home/>}/>
+                          {/*<Route path="/Cart" element={<Cart/>}/>*/}
                           <Route path="/Login" element={<Login/>}/>
                           <Route path="/Register" element={<Register/>}/>
                           <Route path="/Favorite" element={<Favorite/>}/>
