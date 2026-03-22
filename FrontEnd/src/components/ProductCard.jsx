@@ -13,11 +13,12 @@ import StarHalfIcon from '@mui/icons-material/StarHalf';
 import Loader from "./Loader";
 import {CategoryContext} from "../context/CategoryContext.jsx";
 import {UserContext} from "../context/UserContext.jsx";
+import {FavoriteContext} from "../context/FavoriteContext.jsx";
 
 
 export default function ProductCard({item}) {
     const {
-        id,
+        _id: id,
         name = "",
         price,
         quantity,
@@ -35,6 +36,7 @@ export default function ProductCard({item}) {
 
     const { categoryMap } = useContext(CategoryContext);
     const { user } = useContext(UserContext);
+    const { addToFavorite, isInWishList, deleteProductInFavorite, categoryNames } = useContext(FavoriteContext);
 
     const navigate = useNavigate();
 
@@ -44,6 +46,34 @@ export default function ProductCard({item}) {
         }
     }, [categoryMap, categoryID]);
 
+    useEffect(() => {
+        const fetchIsFavorite = async () => {
+            if (user) {
+                const result = await isInWishList(user.id, id);
+                setIsFavorite(result.isInWishLish);
+            }
+        };
+        fetchIsFavorite();
+    }, [user, id, isInWishList]);
+
+    const handleFavoriteToggle = async () => {
+        console.log("Product ID in handleFavoriteToggle:", id);
+        if (!user) {
+            showLoginRequiredDialog().then((result) => {
+                if (result.isConfirmed) {
+                    navigate("/login");
+                }
+            });
+            return;
+        }
+        if (isFavorite) {
+            await deleteProductInFavorite(user.id, id);
+            setIsFavorite(false);
+        } else {
+            await addToFavorite(user.id, id);
+            setIsFavorite(true);
+        }
+    };
 
     return (
         <div className="ProductCard">
@@ -79,7 +109,8 @@ export default function ProductCard({item}) {
                 </div>
             </NavLink>
             <div className="button">
-                <div className="favorite" title={isFavorite ? "Remove from WishList" : "Add to WishList"}>
+                <div className="favorite" title={isFavorite ? "Remove from WishList" : "Add to WishList"}
+                     onClick={handleFavoriteToggle}>
                     {isFavorite ? <FavoriteRoundedIcon/> : <FavoriteTwoToneIcon/>}
                 </div>
             </div>

@@ -20,7 +20,7 @@ router.post("/login", limiter, validate(loginSchema), login);
 router.get("/verify", limiter, verifyEmail);
 router.post("/resend-verification", limiter, resendVerification);
 router.get("/check-user",limiter, checkAccount);
-router.get("/me", limiter,requireAuth, me);
+router.get("/me", limiter, requireAuth, me);
 router.post("/logout",requireAuth, logout);
 
 export default router;

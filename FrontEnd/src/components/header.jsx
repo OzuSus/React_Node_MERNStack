@@ -62,7 +62,7 @@ export default function Header() {
                 </div>
                 <div className="headerLeft">
                     <div className={isMenuClicked ? "expandMenu" : "menuBar"} onClick={handleMenu}>
-                    <span class="sideBarMenu">
+                    <span className="sideBarMenu">
                         <div className="bar1"></div>
                         <div className="bar2"></div>
                         <div className="bar3"></div>

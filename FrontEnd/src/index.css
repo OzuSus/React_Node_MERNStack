@@ -1,34 +1,73 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&display=swap');
 
+/* RESET */
+*{
+  box-sizing:border-box;
+}
 
-html {
+html{
   font-size: calc(15px + 0.390625vw);
-}
-
-body {
-  font-family: sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  height:100%;
   margin:0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
+  padding:0;
+}
+
+body{
+  overflow-x:hidden;
+  margin:0;
+  padding:0;
+  height:100%;
+  font-family:sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+
+  display:flex;
+  flex-direction:column;
+}
+
+/* ROOT CONTAINER */
+#root{
+  flex:1;
   min-height:100vh;
+
+  display:flex;
+  flex-direction:column;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-  monospace;
+/* MAIN CONTENT */
+.mainApp{
+  flex:1;
+  display:flex;
+  flex-direction:column;
 }
 
+/* HEADER (nếu dùng sticky) */
+.headerContainer{
+  position:sticky;
+  top:0;
+  width:100%;
+  z-index:100;
+}
+
+/* FOOTER */
+footer{
+  width:100%;
+}
+
+/* VARIABLES */
 :root{
-  --primary-text-color: #5f3926;
-  --primary-theme-color: #dabec1;
+  --primary-text-color:#5f3926;
+  --primary-theme-color:#dabec1;
   --secondary-theme-color:#9c27b0;
 }
 
+/* CODE FONT */
+code{
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* SELECTION */
 ::selection{
   background-color: var(--primary-theme-color);
 }
