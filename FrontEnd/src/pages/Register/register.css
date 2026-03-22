@@ -17,6 +17,7 @@
     min-height: 130vh;
 }
 .formBox{
+    box-sizing: unset;
     width: 18%;
     position: absolute;
     display: flex;

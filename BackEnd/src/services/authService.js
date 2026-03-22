@@ -6,6 +6,7 @@ import VerifyToken from "../models/VerifyToken.js";
 import {sendVerificationEmail} from "./EmailService.js";
 import crypto from "crypto";
 import {ApiError} from "../utils/ApiError.js";
+import {createCart} from "./cartService.js";
 
 export function signJWT(payload){
     return  jwt.sign(payload, process.env.JWT_SECRET,{
@@ -122,6 +123,7 @@ export async function verifyEmailService(token){
     await user.save();
 
     await VerifyToken.deleteOne({ _id: record._id });
+    await createCart(user._id);
     return { id: user._id.toString(), username: user.username };
 }
 
