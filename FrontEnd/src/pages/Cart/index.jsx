@@ -8,6 +8,7 @@ import {useContext, useEffect} from "react";
 import {UserContext} from "../../context/UserContext";
 import Swal from "sweetalert2";
 import Loader from "../../components/Loader";
+import {CartContext} from "../../context/CartContext.jsx";
 
 export default function Cart() {
     const { cartItems, fetchCartItems, totalPrice, categoryNames, deteleProductInCart, increaseQuantity, decreaseQuantity } = useContext(CartContext);
@@ -15,13 +16,13 @@ export default function Cart() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!isLoading) {
-            if (user?.id) {
-                fetchCartItems(user.id);
-            } else {
-                navigate("/Home");
-            }
+        if (isLoading) return;
+
+        if (!user) {
+            navigate("/Home");
+            return;
         }
+        fetchCartItems(user.id);
     }, [user, isLoading]);
 
     if (isLoading) {
@@ -67,47 +68,47 @@ export default function Cart() {
                                     </thead>
                                     <tbody className="cart__items">
                                     {cartItems.map((item) => (
-                                        <tr className="cart__item" key={item.id}>
+                                        <tr className="cart__item" key={item._id}>
                                             <td className="product__item">
                                                 <div className="product__content">
                                                     <a className="product__image" href="#">
                                                         <img
                                                             src={
-                                                                item.image?.startsWith("http")
-                                                                    ? item.image
-                                                                    : `http://localhost:8080/uploads/${item.image || "assets/stonesjewel.jpg"}`
+                                                                item.id_product.image?.startsWith("http")
+                                                                    ? item.id_product.image
+                                                                    : `http://localhost:8080/uploads/${item.id_product.image || "assets/stonesjewel.jpg"}`
                                                             }
                                                             alt="Product"
                                                         />
                                                     </a>
 
                                                     <div className="order__product--info">
-                                                        <a href="#" className="product__name">{item.name}</a>
-                                                        <p className="order__color">Loại: {categoryNames[item.categoryID] || "Không xác định"}</p>
+                                                        <a href="#" className="product__name">{item.id_product.name}</a>
+                                                        <p className="order__color">Loại: {categoryNames[item.id_product.id_category] || "Không xác định"}</p>
                                                         <ul className="order__size--specification">
-                                                            <li>Mô tả: {item.description || ""}</li>
+                                                            <li>Mô tả: {item.id_product.description || ""}</li>
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="unit__price">{item.price.toLocaleString()}đ</td>
+                                            <td className="unit__price">{item.id_product.price.toLocaleString()}đ</td>
                                             <td>
                                                 <div className="quality__swapper">
-                                                    <button type="button" className="minus__quality change__quality" onClick={() => handleDecrease(item.id, item.quantity)}>
+                                                    <button type="button" className="minus__quality change__quality" onClick={() => handleDecrease(item.id_product._id, item.quantity)}>
                                                         <RemoveIcon fontSize="small"/>
                                                     </button>
                                                     <input readOnly type="number" className="quality__required" min="1" value={item.quantity}/>
-                                                    <button type="button" className="plus__quality change__quality" onClick={() => handleIncrease(item.id)}>
+                                                    <button type="button" className="plus__quality change__quality" onClick={() => handleIncrease(item.id_product._id)}>
                                                         <AddIcon fontSize="small"/>
                                                     </button>
                                                 </div>
                                             </td>
                                             <td className="subtotal__item">
-                                                {(item.price * item.quantity).toLocaleString()}đ
+                                                {(item.id_product.price * item.quantity).toLocaleString()}đ
                                             </td>
                                             <td className="remove__action">
                                                 <button type="button" className="remove__item"
-                                                        onClick={() => handleDeleteProductInCart(item.id)}>
+                                                        onClick={() => handleDeleteProductInCart(item.id_product._id)}>
                                                     <DeleteForeverIcon fontSize="small"/>
                                                 </button>
                                             </td>
