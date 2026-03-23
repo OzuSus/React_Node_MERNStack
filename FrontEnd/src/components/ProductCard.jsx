@@ -14,6 +14,7 @@ import Loader from "./Loader";
 import {CategoryContext} from "../context/CategoryContext.jsx";
 import {UserContext} from "../context/UserContext.jsx";
 import {FavoriteContext} from "../context/FavoriteContext.jsx";
+import {CartContext} from "../context/CartContext.jsx";
 
 
 export default function ProductCard({item}) {
@@ -33,7 +34,7 @@ export default function ProductCard({item}) {
     const [isFavorite, setIsFavorite] = useState(false);
     const [categoryName, setCategoryName] = useState("");
 
-
+    const { addToCart } = useContext(CartContext);
     const { categoryMap } = useContext(CategoryContext);
     const { user } = useContext(UserContext);
     const { addToFavorite, isInWishList, deleteProductInFavorite, categoryNames } = useContext(FavoriteContext);
@@ -73,6 +74,17 @@ export default function ProductCard({item}) {
             await addToFavorite(user.id, id);
             setIsFavorite(true);
         }
+    };
+    const handleAddToCart = () => {
+        if (!user) {
+            showLoginRequiredDialog().then((result) => {
+                if (result.isConfirmed) {
+                    navigate("/login");
+                }
+            });
+            return;
+        }
+        addToCart(id, user.id);
     };
 
     return (
@@ -116,12 +128,12 @@ export default function ProductCard({item}) {
             </div>
 
             <div className="buttons">
-                <div className="addToCartButton" title="Add to Cart" >
+                <div className="addToCartButton" title="Add to Cart" onClick={handleAddToCart}>
                     <AddShoppingCartIcon/>
                 </div>
             </div>
 
-                <button >Thêm vào giỏ hàng</button>
+                <button onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
         </div>
 
     );
