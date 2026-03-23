@@ -8,7 +8,11 @@ export async function createCart(userId) {
 }
 
 export async function getProductCartService(userId) {
-    const productCart = await Cart.find({id_user: userId});
+    const cart = await Cart.findOne({id_user: userId});
+    if (!cart) {
+        throw new ApiError(400, "Giỏ hàng không tồn tại");
+    }
+    const productCart = await CartDetail.find({id_cart: cart._id}).populate("id_product");
     return productCart;
 }
 
@@ -20,6 +24,12 @@ export async function addToCartService(userId, productId) {
     const product = await Product.findById(productId);
     if(!product) {
         throw new ApiError(400, "Sản phẩm không tồn tại");
+    }
+    const cartDetail = await CartDetail.findOne({id_cart: cart._id ,id_product: productId });
+    if (cartDetail) {
+        cartDetail.quantity += 1;
+        await cartDetail.save();
+        return;
     }
     await CartDetail.create({ id_cart: cart._id, id_product: productId, quantity: 1 });
 }
