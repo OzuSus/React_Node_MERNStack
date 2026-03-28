@@ -1,4 +1,9 @@
-import {createNewProductService, getAllProductService, getProductByTagService} from "../services/productService.js";
+import {
+    createNewProductService,
+    getAllProductService,
+    getFilteredProductsService, getProductByIdService,
+    getProductByTagService
+} from "../services/productService.js";
 
 export async function getAllProduct(req,res,next) {
     try {
@@ -14,6 +19,16 @@ export async function getAllProduct(req,res,next) {
         })
     }catch (err){
         next(err)
+    }
+}
+
+export async function getProductById(req,res,next) {
+    try{
+        const productId = req.params.id;
+        const product = await getProductByIdService(productId);
+        return res.status(200).json({product})
+    }catch (err){
+        next(err);
     }
 }
 
@@ -34,5 +49,37 @@ export async function getProductByTag(req,res,next) {
         return res.status(200).json({products})
     }catch (err){
         next(err)
+    }
+}
+
+export async function getFilteredProducts(req, res, next) {
+    try {
+        const {minPrice, maxPrice, category, rating, sort, page = 1, limit = 10} = req.query;
+        const filters = {};
+        if (minPrice || maxPrice) {
+            filters.price = {};
+            if (minPrice) filters.price.$gte = Number(minPrice);
+            if (maxPrice) filters.price.$lte = Number(maxPrice);
+        }
+        if (category) {
+            filters.id_category = category;
+        }
+        if (rating) {
+            filters.rating = { $gte: Number(rating) };
+        }
+        const sortOption = sort === "desc" ? { price: -1 } : { price: 1 };
+
+        const skip = (page - 1) * limit;
+
+        const { products, total } = await getFilteredProductsService(filters, sortOption, skip, Number(limit));
+        return res.status(200).json({
+            total,
+            page: Number(page),
+            limit: Number(limit),
+            totalPages: Math.ceil(total / limit),
+            product: products
+        });
+    } catch (err) {
+        next(err);
     }
 }

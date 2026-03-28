@@ -14,31 +14,37 @@ import {FavoriteProvider} from "./context/FavoriteContext.jsx";
 import React from "react";
 import Cart from "./pages/Cart/index.jsx";
 import {CartProvider} from "./context/CartContext.jsx";
+import Shop from "./pages/Shop/index.jsx";
+import {FilterProvider} from "./context/FilterContext.jsx";
+
 // import Cart from "./pages/Cart/index.jsx";
 
 function App() {
-  return (
-      <CategoryProvider>
-          <CartProvider>
-              <FavoriteProvider>
-                  <BrowserRouter>
-                      <Header/>
-                      <div className="mainApp">
-                          <Routes>
-                              <Route path="/" element={<Home/>}/>
-                              <Route path="/Home" element={<Home/>}/>
-                              <Route path="/Cart" element={<Cart/>}/>
-                              <Route path="/Login" element={<Login/>}/>
-                              <Route path="/Register" element={<Register/>}/>
-                              <Route path="/Favorite" element={<Favorite/>}/>
-                          </Routes>
-                      </div>
-                      <Footer/>
-                  </BrowserRouter>
-              </FavoriteProvider>
-          </CartProvider>
-      </CategoryProvider>
-  )
+    return (
+        <CategoryProvider>
+            <FilterProvider>
+                <CartProvider>
+                    <FavoriteProvider>
+                        <BrowserRouter>
+                            <Header/>
+                            <div className="mainApp">
+                                <Routes>
+                                    <Route path="/" element={<Home/>}/>
+                                    <Route path="/Home" element={<Home/>}/>
+                                    <Route path="/Shop" element={<Shop/>}/>
+                                    <Route path="/Cart" element={<Cart/>}/>
+                                    <Route path="/Login" element={<Login/>}/>
+                                    <Route path="/Register" element={<Register/>}/>
+                                    <Route path="/Favorite" element={<Favorite/>}/>
+                                </Routes>
+                            </div>
+                            <Footer/>
+                        </BrowserRouter>
+                    </FavoriteProvider>
+                </CartProvider>
+            </FilterProvider>
+        </CategoryProvider>
+    )
 }
 
 export default App
