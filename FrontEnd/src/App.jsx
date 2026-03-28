@@ -11,11 +11,13 @@ import {UserProvider} from "./context/UserContext.jsx";
 import Register from "./pages/Register/index.jsx";
 import {CategoryProvider} from "./context/CategoryContext.jsx";
 import {FavoriteProvider} from "./context/FavoriteContext.jsx";
+import {ProductProvider} from "./context/ProductContext.jsx";
 import React from "react";
 import Cart from "./pages/Cart/index.jsx";
 import {CartProvider} from "./context/CartContext.jsx";
 import Shop from "./pages/Shop/index.jsx";
 import {FilterProvider} from "./context/FilterContext.jsx";
+import ProductDetails from "./pages/ProductDetails/index.jsx";
 
 // import Cart from "./pages/Cart/index.jsx";
 
@@ -36,6 +38,11 @@ function App() {
                                     <Route path="/Login" element={<Login/>}/>
                                     <Route path="/Register" element={<Register/>}/>
                                     <Route path="/Favorite" element={<Favorite/>}/>
+                                    <Route path="/Products/:prodID" element={
+                                        <ProductProvider>
+                                            <ProductDetails/>
+                                        </ProductProvider>
+                                    }/>
                                 </Routes>
                             </div>
                             <Footer/>

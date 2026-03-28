@@ -1,7 +1,7 @@
 import {
     createNewProductService,
     getAllProductService,
-    getFilteredProductsService, getProductByIdService,
+    getFilteredProductsService, getProductByCategoryService, getProductByIdService,
     getProductByTagService
 } from "../services/productService.js";
 
@@ -27,6 +27,16 @@ export async function getProductById(req,res,next) {
         const productId = req.params.id;
         const product = await getProductByIdService(productId);
         return res.status(200).json({product})
+    }catch (err){
+        next(err);
+    }
+}
+
+export async function getProductByCategory(req,res,next) {
+    try{
+        const categoryId = req.params.idCategory;
+        const products = await getProductByCategoryService(categoryId);
+        return res.status(200).json({products})
     }catch (err){
         next(err);
     }
