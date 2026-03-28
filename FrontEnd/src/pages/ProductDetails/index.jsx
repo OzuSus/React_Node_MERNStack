@@ -55,7 +55,7 @@ export default function ProductDetails() {
     }
 
     const {
-        id,
+        _id,
         name = "",
         price,
         quantity,
@@ -100,7 +100,7 @@ export default function ProductDetails() {
             });
             return;
         }
-        addToCart(id, user.id);
+        addToCart(_id, user.id);
     };
     const handleFavoriteToggle = async () => {
         if (!user) {
@@ -112,16 +112,16 @@ export default function ProductDetails() {
             return;
         }
         if (isFavorite) {
-            await deleteProductInFavorite(user.id, id);
+            await deleteProductInFavorite(user.id, _id);
             setIsFavorite(false);
         } else {
-            await addToFavorite(user.id, id);
+            await addToFavorite(user.id, _id);
             setIsFavorite(true);
         }
     };
 
     return (
-        <div className="productDetailsContainer" key={id}>
+        <div className="productDetailsContainer" key={_id}>
             <div className="detailsContainer">
                 <div className="imgcontainer">
                     <img
@@ -148,10 +148,9 @@ export default function ProductDetails() {
                 </div>
                 <div className="textContentContainer">
                     <h2>{name}</h2>
-                    <small>{categoryName}</small>
+                    <small>Category: {categoryName}</small>
                     <div className="price">
                         <strong>{price.toLocaleString()}đ{" "}</strong>
-
                     </div>
                     <div className="highlights">
                         <div>

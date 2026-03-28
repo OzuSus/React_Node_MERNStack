@@ -22,6 +22,7 @@ section {
   margin-bottom: 5%;
 }
 .mainApp{
+  margin-bottom: 50px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

@@ -22,6 +22,11 @@ export async function getProductByIdService(productId) {
     return product;
 }
 
+export async function getProductByCategoryService(categoryId) {
+    const products = await Product.find({id_category: categoryId});
+    return products;
+}
+
 export async function createNewProductService(productData) {
     const newProduct = await Product.create(productData);
     return newProduct;
