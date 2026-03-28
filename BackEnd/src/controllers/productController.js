@@ -24,7 +24,7 @@ export async function getAllProduct(req,res,next) {
 
 export async function getProductById(req,res,next) {
     try{
-        const productId = req.query.id;
+        const productId = req.params.id;
         const product = await getProductByIdService(productId);
         return res.status(200).json({product})
     }catch (err){

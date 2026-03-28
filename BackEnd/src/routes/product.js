@@ -11,10 +11,10 @@ import {productSchema} from "../validations/productValidation.js";
 import {requireAdmin, requireAuth} from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
-router.get("/", limiter, getAllProduct);
+router.get("/", getAllProduct);
+router.get("/tag", getProductByTag);
+router.get("/filter", getFilteredProducts);
 router.get("/:id", getProductById);
 router.post("/", limiter, requireAuth, requireAdmin, validate(productSchema), createNewProduct);
-router.get("/tag", limiter, getProductByTag);
-router.get("/filter", getFilteredProducts);
 
 export default router;

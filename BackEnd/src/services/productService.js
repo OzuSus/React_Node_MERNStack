@@ -15,7 +15,7 @@ export async function getAllProductService(page, limit) {
 }
 
 export async function getProductByIdService(productId) {
-    const product = await Product.findOne({_id: productId});
+    const product = await Product.findById(productId);
     if(!product){
         throw new ApiError(404, "Ko tim thay san pham!");
     }

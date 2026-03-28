@@ -5,5 +5,5 @@ import {limiter} from "../middlewares/rateLimiter.js";
 
 const router = express.Router();
 router.get("/", getAllCategory)
-router.get("/:id", limiter, getCategoryById)
+router.get("/:id", getCategoryById)
 export default router;
