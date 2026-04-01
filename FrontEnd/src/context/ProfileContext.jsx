@@ -1,0 +1,92 @@
+import React, {createContext, useState} from "react";
+import axios from "axios";
+import {showConfirmDialog, showErrorDialog, showSuccessDialog} from "../utils/Alert";
+
+export const ProfileContext = createContext();
+
+export const ProfileProvider = ({children}) => {
+    const [changeStatus, setChangeStatus] = useState(null);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [userInfo, setUserInfo] = useState(null);
+    // const [user, setUser] = useState(null);
+
+    const fetchUserInfo = async (userId) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/users/id`, {params: {id: userId}});
+            setUserInfo(response.data);
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi tải thông tin người dùng:", error);
+        }
+    }
+
+    const handleUploadFile = async (filename) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/uploads/${encodeURIComponent(filename)}`);
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi tải lên tệp:", error);
+            setChangeStatus("error");
+            setErrorMessage(error.response?.data?.message || "Không thể tải lên tệp.");
+            await showErrorDialog("Lỗi", errorMessage || "Không thể tải lên tệp.");
+        }
+    }
+
+    const handleChangeAvatar = async (id, avatarFile) => {
+
+        const formData = new FormData();
+        formData.append("id", id);
+        formData.append("avatarFile", avatarFile);
+
+        try {
+            await axios.put(`http://localhost:8080/api/users/updateAvatar`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+
+            });
+
+            setChangeStatus("success");
+            setErrorMessage("");
+            await handleUploadFile(avatarFile.name);
+            await fetchUserInfo(id);
+            await showSuccessDialog("Thành công", "Avatar đã được thay đổi.");
+
+        } catch (error) {
+            console.error("Lỗi đổi avatar:", error);
+            setChangeStatus("error");
+            setErrorMessage(error.response?.data?.message || "Không thể đổi avatar.");
+            await showErrorDialog("Lỗi", errorMessage || "Không thể đổi avatar.");
+        }
+    }
+
+    const handleChangeProfile = async (id, username, fullname, address, phone, email) => {
+        try {
+            await axios.put(`http://localhost:8080/api/users/updateInfoAccount?id=${id}&username=${username}&fullname=${fullname}&address=${address}&phone=${phone}&email=${email}`);
+            setChangeStatus("success");
+            setErrorMessage("");
+            await fetchUserInfo(id);
+            await showSuccessDialog("Thành công", "Thông tin đã được thay đổi.");
+        } catch (error) {
+            console.error("Lỗi đổi thông tin:", error);
+            setChangeStatus("error");
+            setErrorMessage(error.response?.data?.message || "Không thể đổi thông tin.");
+            await showErrorDialog("Lỗi", errorMessage || "Không thể đổi thông tin.");
+        }
+    }
+
+    return (
+        <ProfileContext.Provider value={{
+            handleChangeAvatar,
+            handleChangeProfile,
+            handleUploadFile,
+            fetchUserInfo,
+            userInfo,
+            changeStatus,
+            setChangeStatus,
+            errorMessage
+        }}>
+            {children}
+        </ProfileContext.Provider>
+    );
+}
