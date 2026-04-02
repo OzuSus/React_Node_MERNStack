@@ -35,14 +35,14 @@
 }
 
 /* ===== BUTTONS ===== */
-.buttons {
+.buttonss {
     display: flex;
     gap: 10px;
     width: 100%;
     margin-top: 15px;
 }
 
-.buttons button {
+.buttonss button {
     flex: 1;
     padding: 10px;
     border-radius: 10px;
@@ -53,21 +53,21 @@
 }
 
 /* primary */
-.buttons button:first-child {
+.buttonss button:first-child {
     background: #ff4d4f;
     color: white;
 }
 
-.buttons button:first-child:hover {
+.buttonss button:first-child:hover {
     background: #d9363e;
 }
 
 /* secondary */
-.buttons button:last-child {
+.buttonss button:last-child {
     background: #f5f5f5;
 }
 
-.buttons button:last-child:hover {
+.buttonss button:last-child:hover {
     background: #e0e0e0;
 }
 

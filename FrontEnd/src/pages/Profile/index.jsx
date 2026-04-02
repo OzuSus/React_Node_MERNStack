@@ -12,22 +12,28 @@ import Loader from "../../components/Loader";
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 export default function Profile() {
-    const {fetchUserInfo} = useContext(ProfileContext);
-    const {user} = useContext(UserContext);
-    const {userInfo} = useContext(ProfileContext);
+    const {user,isLoading} = useContext(UserContext);
     const {
+        fetchUserInfo,
+        userInfo,
         handleChangeAvatar,
         handleChangeProfile,
         handleUploadFile,
         changeStatus,
-        setChangeStatus,
+        setChangeStatus
     } = useContext(ProfileContext);
-
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
     useEffect(() => {
-        if (user?.id) {
-            fetchUserInfo(user.id);
+        console.log("user:", user);
+        console.log("userInfo:", userInfo);
+
+        if (user?._id) {
+
+            fetchUserInfo(user._id);
         }
-    }, [user]);
+    }, [user?.id]);
 
     useEffect(() => {
         if (changeStatus === "success") {
@@ -45,12 +51,12 @@ export default function Profile() {
 
     useEffect(() => {
         if (userInfo) {
-            setUsername(userInfo.username || "");
-            setEmail(userInfo.email || "");
-            setFullname(userInfo.fullname || "");
-            setPhone(userInfo.phone || "");
-            setAddress(userInfo.address || "");
-            setAvatar(userInfo.avatar || "");
+            setUsername(userInfo?.username || "");
+            setEmail(userInfo?.email || "");
+            setFullname(userInfo?.fullname || "");
+            setPhone(userInfo?.phone || "");
+            setAddress(userInfo?.address || "");
+            setAvatar(userInfo?.avatar || "");
         }
     }, [userInfo]);
 

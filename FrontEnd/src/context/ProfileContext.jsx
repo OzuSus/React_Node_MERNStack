@@ -12,9 +12,17 @@ export const ProfileProvider = ({children}) => {
 
     const fetchUserInfo = async (userId) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/users/id`, {params: {id: userId}});
-            setUserInfo(response.data);
-            return response.data;
+            const response = await fetch(`http://localhost:5000/auth/me`,{
+                method: "GET",
+                credentials: "include",
+                // headers: {
+                //     "Content-Type": "application/json",
+                //     Authorization: `Bearer ${localStorage.getItem("token")}`
+                // }
+            })
+            const data = await response.json();
+            setUserInfo(data);
+            return data
         } catch (error) {
             console.error("Lỗi tải thông tin người dùng:", error);
         }
