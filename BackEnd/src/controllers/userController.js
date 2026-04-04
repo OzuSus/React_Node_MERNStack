@@ -39,6 +39,7 @@ export async function updateAccount(req, res, next){
 }
 
 export async function uploadAvatar(req,res,next) {
+    console.log("👉 vào controller");
     try{
         if (!req.file) {
             return res.status(400).json({ message: "Không có file" });

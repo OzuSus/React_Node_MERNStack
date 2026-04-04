@@ -8,6 +8,7 @@ export const ProfileProvider = ({children}) => {
     const [changeStatus, setChangeStatus] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
     const [userInfo, setUserInfo] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
     // const [user, setUser] = useState(null);
 
     const fetchUserInfo = async (userId) => {
@@ -28,45 +29,32 @@ export const ProfileProvider = ({children}) => {
         }
     }
 
-    const handleUploadFile = async (filename) => {
-        try {
-            const response = await axios.get(`http://localhost:8080/uploads/${encodeURIComponent(filename)}`);
-            return response.data;
-        } catch (error) {
-            console.error("Lỗi tải lên tệp:", error);
-            setChangeStatus("error");
-            setErrorMessage(error.response?.data?.message || "Không thể tải lên tệp.");
-            await showErrorDialog("Lỗi", errorMessage || "Không thể tải lên tệp.");
-        }
-    }
 
     const handleChangeAvatar = async (id, avatarFile) => {
-
         const formData = new FormData();
-        formData.append("id", id);
-        formData.append("avatarFile", avatarFile);
-
+        formData.append("avatar", avatarFile);
         try {
-            await axios.put(`http://localhost:8080/api/users/updateAvatar`, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
+            setIsUploading(true);
+            await axios.put("http://localhost:5000/users/upload-avatar",
+                formData,
+                {
+                    withCredentials: true
                 }
-
-            });
-
+            );
             setChangeStatus("success");
             setErrorMessage("");
-            await handleUploadFile(avatarFile.name);
             await fetchUserInfo(id);
+            setIsUploading(false);
             await showSuccessDialog("Thành công", "Avatar đã được thay đổi.");
-
         } catch (error) {
+            setIsUploading(false);
             console.error("Lỗi đổi avatar:", error);
             setChangeStatus("error");
-            setErrorMessage(error.response?.data?.message || "Không thể đổi avatar.");
-            await showErrorDialog("Lỗi", errorMessage || "Không thể đổi avatar.");
+            const msg = error.response?.data?.message || "Không thể đổi avatar.";
+            setErrorMessage(msg);
+            await showErrorDialog("Lỗi", msg);
         }
-    }
+    };
 
     const handleChangeProfile = async (id, username, fullname, address, phone, email) => {
         try {
@@ -100,12 +88,12 @@ export const ProfileProvider = ({children}) => {
         <ProfileContext.Provider value={{
             handleChangeAvatar,
             handleChangeProfile,
-            handleUploadFile,
             fetchUserInfo,
             userInfo,
             changeStatus,
             setChangeStatus,
-            errorMessage
+            errorMessage,
+            isUploading
         }}>
             {children}
         </ProfileContext.Provider>
