@@ -71,10 +71,10 @@ export default function Profile() {
                 <div className="row_Profile">
                     <div className="col-3">
                         <div className="service__list">
-                            <a className="service__item service__item--clicked" href="#">Tài khoản</a>
+                            <NavLink to={"/Profile"} className="service__item service__item--clicked" href="#">Tài khoản</NavLink>
                             <NavLink to={"/ChangePassWord"} className="service__item" href="ChangePassword">Đổi mật
                                 khẩu</NavLink>
-                            <a className="service__item" href="PurchaseHistory">Lịch sử mua hàng</a>
+                            <NavLink className="service__item" to={"/PurchaseHistory"}>Lịch sử mua hàng</NavLink>
                         </div>
                     </div>
                     <div className="col-9 col_9_profile">
