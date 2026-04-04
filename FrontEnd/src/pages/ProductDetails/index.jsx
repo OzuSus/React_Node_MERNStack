@@ -132,7 +132,7 @@ export default function ProductDetails() {
                             e.target.src = "https://th.bing.com/th/id/R.6bac411a562acdc4144cdcf74963580d?rik=ihrgpCwqShHhHg&pid=ImgRaw&r=0"; // ảnh mặc định
                         }}/>
 
-                    <div className="buttons">
+                    <div className="buttonss">
                         <button onClick={handleAddToCart}>Add to Cart</button>
                         <button onClick={handleFavoriteToggle}>
                             <span className="removeWish">

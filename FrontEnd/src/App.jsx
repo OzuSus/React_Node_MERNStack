@@ -18,39 +18,49 @@ import {CartProvider} from "./context/CartContext.jsx";
 import Shop from "./pages/Shop/index.jsx";
 import {FilterProvider} from "./context/FilterContext.jsx";
 import ProductDetails from "./pages/ProductDetails/index.jsx";
+import {CheckoutProvider} from "./context/CheckoutContext.jsx";
+import Checkout from "./pages/Checkout/index.jsx";
+import Profile from "./pages/Profile/index.jsx";
+import {ProfileProvider} from "./context/ProfileContext.jsx";
 
 // import Cart from "./pages/Cart/index.jsx";
 
 function App() {
     return (
-        <CategoryProvider>
-            <FilterProvider>
-                <CartProvider>
-                    <FavoriteProvider>
-                        <BrowserRouter>
-                            <Header/>
-                            <div className="mainApp">
-                                <Routes>
-                                    <Route path="/" element={<Home/>}/>
-                                    <Route path="/Home" element={<Home/>}/>
-                                    <Route path="/Shop" element={<Shop/>}/>
-                                    <Route path="/Cart" element={<Cart/>}/>
-                                    <Route path="/Login" element={<Login/>}/>
-                                    <Route path="/Register" element={<Register/>}/>
-                                    <Route path="/Favorite" element={<Favorite/>}/>
-                                    <Route path="/Products/:prodID" element={
-                                        <ProductProvider>
-                                            <ProductDetails/>
-                                        </ProductProvider>
-                                    }/>
-                                </Routes>
-                            </div>
-                            <Footer/>
-                        </BrowserRouter>
-                    </FavoriteProvider>
-                </CartProvider>
-            </FilterProvider>
-        </CategoryProvider>
+        <CheckoutProvider>
+            <CategoryProvider>
+                <FilterProvider>
+                    <ProfileProvider>
+                        <CartProvider>
+                            <FavoriteProvider>
+                                <BrowserRouter>
+                                    <Header/>
+                                    <div className="mainApp">
+                                        <Routes>
+                                            <Route path="/" element={<Home/>}/>
+                                            <Route path="/Home" element={<Home/>}/>
+                                            <Route path="/Shop" element={<Shop/>}/>
+                                            <Route path="/Cart" element={<Cart/>}/>
+                                            <Route path="/Login" element={<Login/>}/>
+                                            <Route path="/Register" element={<Register/>}/>
+                                            <Route path="/Favorite" element={<Favorite/>}/>
+                                            <Route path="/Products/:prodID" element={
+                                                <ProductProvider>
+                                                    <ProductDetails/>
+                                                </ProductProvider>
+                                            }/>
+                                            <Route path="/Checkout" element={<Checkout/>}/>
+                                            <Route path="/Profile" element={<Profile/>}/>
+                                        </Routes>
+                                    </div>
+                                    <Footer/>
+                                </BrowserRouter>
+                            </FavoriteProvider>
+                        </CartProvider>
+                    </ProfileProvider>
+                </FilterProvider>
+            </CategoryProvider>
+        </CheckoutProvider>
     )
 }
 

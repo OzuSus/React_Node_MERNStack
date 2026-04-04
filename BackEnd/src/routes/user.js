@@ -1,10 +1,16 @@
 import express from "express";
-import {getUser, validatePassword} from "../controllers/userController.js";
+import {getUser, updateAccount, uploadAvatar, validatePassword} from "../controllers/userController.js";
 import {requireAuth} from "../middlewares/authMiddleware.js";
+import {validate} from "../middlewares/validateMiddleware.js";
+import {userSchema} from "../validations/userValidation.js";
+import {limiter} from "../middlewares/rateLimiter.js";
+import uploadAvatarMiddleware from "../middlewares/uploadAvatarMiddleware.js";
 
 const router = express.Router();
 
 router.get("/", requireAuth, getUser);
 router.post("/validate-password", validatePassword);
+router.put("/updateAccount", requireAuth, validate(userSchema), limiter, updateAccount);
+router.put("/upload-avatar", requireAuth, uploadAvatarMiddleware.single("avatar"), limiter, uploadAvatar);
 
 export default router;

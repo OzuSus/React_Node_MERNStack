@@ -31,3 +31,22 @@ export async function validatePasswordService(password) {
     }
     return true;
 }
+
+export async function updateAccountService(userId, fullname, address, phone) {
+    if (!fullname || !address || !phone) {
+        throw new ApiError(400, "fullname, address va phone khong duoc de trong");
+    }
+    const user = await User.findByIdAndUpdate(userId, { fullname, address, phone }, { new: true }).select("-password").lean();
+    if (!user) {
+        throw new ApiError(404, "Khong tim thay user");
+    }
+    return user;
+}
+
+export async function updateAvatarService(userId, avatarUrl) {
+    const user = await User.findByIdAndUpdate(userId, { avatar: avatarUrl }, { new: true }).select("-password").lean();
+    if (!user) {
+        throw new ApiError(404, "Khong tim thay user");
+    }
+    return user;
+}
