@@ -95,6 +95,7 @@ h1{
 }
 .block_info{
     display: flex;
+    flex-wrap: wrap;
     margin-top: 20px;
 }
 .user{
@@ -193,7 +194,7 @@ form{
 .save {
     float: right;
     margin: 30px 0;
-    margin-right: 40px;
+    margin-right: 65px;
 }
 
 .save button {

@@ -70,16 +70,29 @@ export const ProfileProvider = ({children}) => {
 
     const handleChangeProfile = async (id, username, fullname, address, phone, email) => {
         try {
-            await axios.put(`http://localhost:8080/api/users/updateInfoAccount?id=${id}&username=${username}&fullname=${fullname}&address=${address}&phone=${phone}&email=${email}`);
+            const response =  await fetch(`http://localhost:5000/users/updateAccount`,{
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({fullname, address, phone})
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Update thất bại");
+            }
             setChangeStatus("success");
             setErrorMessage("");
             await fetchUserInfo(id);
             await showSuccessDialog("Thành công", "Thông tin đã được thay đổi.");
+
         } catch (error) {
             console.error("Lỗi đổi thông tin:", error);
             setChangeStatus("error");
-            setErrorMessage(error.response?.data?.message || "Không thể đổi thông tin.");
-            await showErrorDialog("Lỗi", errorMessage || "Không thể đổi thông tin.");
+            const msg = error.message || "Không thể đổi thông tin.";
+            setErrorMessage(msg);
+            await showErrorDialog("Lỗi", msg);
         }
     }
 
