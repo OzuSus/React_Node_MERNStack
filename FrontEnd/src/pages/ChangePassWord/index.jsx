@@ -80,8 +80,8 @@ export default function ChangePassWord() {
                 <div className="col-3">
                     <div className="service__list">
                         <NavLink to={"/Profile"} className="service__item">Tài khoản</NavLink>
-                        <a className="service__item service__item--clicked">Đổi mật khẩu</a>
-                        <a className="service__item" href="PurchaseHistory">Lịch sử mua hàng</a>
+                        <NavLink to={"/ChangePassWord"} className="service__item service__item--clicked">Đổi mật khẩu</NavLink>
+                        <NavLink to={"/PurchaseHistory"} className="service__item" href="PurchaseHistory">Lịch sử mua hàng</NavLink>
                     </div>
                 </div>
                 <div className="col-9 col_9_profile">
