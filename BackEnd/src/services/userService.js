@@ -1,6 +1,8 @@
 import {ApiError} from "../utils/ApiError.js";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
+import {sendResetPasswordEmail} from "./EmailService.js";
+import {createRandomPassword} from "../utils/CreatePassword.js";
 
 export async function getUserService({ requester, userId }) {
     let id = userId || requester.id;
@@ -69,4 +71,17 @@ export async function changePasswordService(userId, oldPass, newPassword) {
       const newHashPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
       user.password = newHashPassword;
       await user.save();
+}
+
+export async function resetPasswordService(username, email) {
+    const user = await User.findOne({ username, email });
+    if (!user) {
+        throw new ApiError(404, "Tai khoan ko dung");
+    }
+    const passwordReset = createRandomPassword();
+    const SALT_ROUNDS = 10;
+    const newHashPassword = await bcrypt.hash(passwordReset, SALT_ROUNDS);
+    user.password = newHashPassword;
+    await user.save();
+    await sendResetPasswordEmail(email, username,passwordReset);
 }

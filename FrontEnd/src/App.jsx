@@ -24,6 +24,7 @@ import Profile from "./pages/Profile/index.jsx";
 import {ProfileProvider} from "./context/ProfileContext.jsx";
 import ChangePassWord from "./pages/ChangePassWord/index.jsx";
 import {ChangePasswordProvider} from "./context/ChangePasswordContext.jsx";
+import ForgotPassword from "./pages/ForgotPassword/index.jsx";
 
 // import Cart from "./pages/Cart/index.jsx";
 
@@ -45,6 +46,7 @@ function App() {
                                                 <Route path="/Shop" element={<Shop/>}/>
                                                 <Route path="/Cart" element={<Cart/>}/>
                                                 <Route path="/Login" element={<Login/>}/>
+                                                <Route path="/Forgot-Password" element={<ForgotPassword/>}/>
                                                 <Route path="/Register" element={<Register/>}/>
                                                 <Route path="/Favorite" element={<Favorite/>}/>
                                                 <Route path="/Products/:prodID" element={
@@ -55,6 +57,7 @@ function App() {
                                                 <Route path="/Checkout" element={<Checkout/>}/>
                                                 <Route path="/Profile" element={<Profile/>}/>
                                                 <Route path="/ChangePassWord" element={<ChangePassWord/>}/>
+
                                             </Routes>
                                         </div>
                                         <Footer/>
