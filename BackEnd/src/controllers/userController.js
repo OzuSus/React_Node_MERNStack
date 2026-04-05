@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import {
-    getUserService,
+    changePasswordService,
+    getUserService, resetPasswordService,
     updateAccountService,
     updateAvatarService,
     validatePasswordService
@@ -47,10 +48,31 @@ export async function uploadAvatar(req,res,next) {
         const userId = req.user.id;
         const avatarUrl = req.file.path;
         const user = await updateAvatarService(userId, avatarUrl);
-        res.status(200).json({
-            message: "Upload avatar thanh cong!",
-            user
-        });
+        return  res.status(200).json({
+                    message: "Upload avatar thanh cong!",
+                    user
+                });
+    }catch (err) {
+        next(err);
+    }
+}
+
+export async function changePassword(req,res,next) {
+    try{
+        const userId = req.user.id;
+        const {oldPass, newPass} = req.query;
+        await changePasswordService(userId, oldPass, newPass);
+        return res.status(200).json({message: "Đổi mật khẩu thành công!"});
+    }catch (err) {
+        next(err);
+    }
+}
+
+export async function resetPassword(req,res,next) {
+    try{
+        const {username,email} = req.query;
+        await resetPasswordService(username, email);
+        return res.status(200).json({message: "Reset mật khẩu thành công! Vui lòng kiểm tra email để nhận mật khẩu mới."});
     }catch (err) {
         next(err);
     }

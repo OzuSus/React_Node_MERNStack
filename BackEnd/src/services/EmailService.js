@@ -41,3 +41,29 @@ export async function sendVerificationEmail(toEmail, username, token) {
 
     return transporter.sendMail(mailOptions);
 }
+
+export async function sendResetPasswordEmail(toEmail, username, newPassword) {
+    const html = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; max-width: 600px; margin: auto; background: #ffffff;">
+      <div style="text-align: center;">
+        <img src="https://res.cloudinary.com/duztah40b/image/upload/v1745154145/logo_p2qp8w.jpg" alt="Logo" style="height: 100px;" />
+        <h2 style="color: #333;">Yêu cầu đặt lại mật khẩu</h2>
+        <p style="color: #555;">Xin chào <strong>${username}</strong>,</p>
+        <p style="color: #555;">Bạn đã yêu cầu đặt lại mật khẩu. Mật khẩu mới của bạn là:</p>
+        <p style="color: #007BFF; font-size: 18px; font-weight: bold;">${newPassword}</p>
+        <p style="color: #555;">Vui lòng đăng nhập và thay đổi mật khẩu ngay sau khi đăng nhập để bảo mật tài khoản của bạn.</p>
+        <p style="color: #aaa; margin-top: 30px; font-size: 12px;">Nếu bạn không yêu cầu đặt lại mật khẩu, hãy liên hệ với chúng tôi ngay lập tức.</p>
+      </div>
+    </div>
+  `;
+
+    const mailOptions = {
+        from: `"TMDT" <${process.env.SMTP_USERNAME}>`,
+        to: toEmail,
+        subject: "Mật khẩu mới cho tài khoản của bạn",
+        html
+    };
+
+    return transporter.sendMail(mailOptions);
+
+}
