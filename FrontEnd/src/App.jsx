@@ -22,6 +22,8 @@ import {CheckoutProvider} from "./context/CheckoutContext.jsx";
 import Checkout from "./pages/Checkout/index.jsx";
 import Profile from "./pages/Profile/index.jsx";
 import {ProfileProvider} from "./context/ProfileContext.jsx";
+import ChangePassWord from "./pages/ChangePassWord/index.jsx";
+import {ChangePasswordProvider} from "./context/ChangePasswordContext.jsx";
 
 // import Cart from "./pages/Cart/index.jsx";
 
@@ -33,28 +35,31 @@ function App() {
                     <ProfileProvider>
                         <CartProvider>
                             <FavoriteProvider>
-                                <BrowserRouter>
-                                    <Header/>
-                                    <div className="mainApp">
-                                        <Routes>
-                                            <Route path="/" element={<Home/>}/>
-                                            <Route path="/Home" element={<Home/>}/>
-                                            <Route path="/Shop" element={<Shop/>}/>
-                                            <Route path="/Cart" element={<Cart/>}/>
-                                            <Route path="/Login" element={<Login/>}/>
-                                            <Route path="/Register" element={<Register/>}/>
-                                            <Route path="/Favorite" element={<Favorite/>}/>
-                                            <Route path="/Products/:prodID" element={
-                                                <ProductProvider>
-                                                    <ProductDetails/>
-                                                </ProductProvider>
-                                            }/>
-                                            <Route path="/Checkout" element={<Checkout/>}/>
-                                            <Route path="/Profile" element={<Profile/>}/>
-                                        </Routes>
-                                    </div>
-                                    <Footer/>
-                                </BrowserRouter>
+                                <ChangePasswordProvider>
+                                    <BrowserRouter>
+                                        <Header/>
+                                        <div className="mainApp">
+                                            <Routes>
+                                                <Route path="/" element={<Home/>}/>
+                                                <Route path="/Home" element={<Home/>}/>
+                                                <Route path="/Shop" element={<Shop/>}/>
+                                                <Route path="/Cart" element={<Cart/>}/>
+                                                <Route path="/Login" element={<Login/>}/>
+                                                <Route path="/Register" element={<Register/>}/>
+                                                <Route path="/Favorite" element={<Favorite/>}/>
+                                                <Route path="/Products/:prodID" element={
+                                                    <ProductProvider>
+                                                        <ProductDetails/>
+                                                    </ProductProvider>
+                                                }/>
+                                                <Route path="/Checkout" element={<Checkout/>}/>
+                                                <Route path="/Profile" element={<Profile/>}/>
+                                                <Route path="/ChangePassWord" element={<ChangePassWord/>}/>
+                                            </Routes>
+                                        </div>
+                                        <Footer/>
+                                    </BrowserRouter>
+                                </ChangePasswordProvider>
                             </FavoriteProvider>
                         </CartProvider>
                     </ProfileProvider>

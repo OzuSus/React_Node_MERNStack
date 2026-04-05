@@ -1,5 +1,6 @@
 import {ApiError} from "../utils/ApiError.js";
 import User from "../models/User.js";
+import bcrypt from "bcrypt";
 
 export async function getUserService({ requester, userId }) {
     let id = userId || requester.id;
@@ -49,4 +50,23 @@ export async function updateAvatarService(userId, avatarUrl) {
         throw new ApiError(404, "Khong tim thay user");
     }
     return user;
+}
+
+export async function changePasswordService(userId, oldPass, newPassword) {
+      const user = await User.findById(userId);
+      if (!user) {
+          throw new ApiError(404, "Khong tim thay user");
+      }
+      const isMatchPass = await bcrypt.compare(oldPass, user.password);
+      if(!isMatchPass){
+          throw new ApiError(400, "Mat khau cu khong chinh xac");
+      }
+      const isvalidNewPass = await validatePasswordService(newPassword);
+      if (!isvalidNewPass) {
+          throw new ApiError(400, "Mat khau moi khong hop le");
+      }
+      const SALT_ROUNDS = 10;
+      const newHashPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+      user.password = newHashPassword;
+      await user.save();
 }
