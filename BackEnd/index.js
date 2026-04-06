@@ -8,6 +8,9 @@ import productRoutes from "./src/routes/product.js"
 import categoryRoutes from "./src/routes/category.js"
 import favoriteRoutes from "./src/routes/favorite.js"
 import cartRoutes from "./src/routes/cart.js"
+import deliveryMethodRoutes from "./src/routes/deliveryMethod.js"
+import paymentMethodRoutes from "./src/routes/paymentMethod.js"
+import orderRoutes from "./src/routes/Order.js"
 import {errorHandler} from "./src/middlewares/errorHandlerMiddleware.js";
 import cookieParser from "cookie-parser";
 import path from "path";
@@ -34,6 +37,9 @@ app.use("/products", productRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/favorite", favoriteRoutes);
 app.use("/cart", cartRoutes);
+app.use("/deliveryMethods", deliveryMethodRoutes);
+app.use("/paymentMrthods", paymentMethodRoutes);
+app.use("/orders", orderRoutes);
 
 
 app.get("/", (req, res) => res.send("API running"));
