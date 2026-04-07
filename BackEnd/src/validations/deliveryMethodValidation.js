@@ -1,0 +1,16 @@
+import Joi from "joi";
+
+export const deliveryMethodSchema = Joi.object({
+    name: Joi.string().required().messages({
+        "string.empty": "Tên phương thức vận chuyển không được để trống",
+        "any.required": "Tên phương thức vận chuyển là bắt buộc"
+    }),
+    description: Joi.string().optional().messages({
+        "string.empty": "Mô tả không được để trống",
+        "string.base": "Mô tả phải là một chuỗi"
+    }),
+    price: Joi.number().required().positive().messages({
+        "number.base": "Giá phải là một số",
+        "any.required": "Giá là bắt buộc"
+    })
+})
