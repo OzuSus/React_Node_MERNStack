@@ -10,6 +10,10 @@ const OrderSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    fullname:{
+        type: String,
+        required: true
+    },
     address:{
         type: String,
         required: true
@@ -22,15 +26,19 @@ const OrderSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    total_price:{
+        type: Number,
+        required: true
+    },
     id_payment_method: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "PaymentMethod",
         required: true
     },
-    id_status_order: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "StatusOrder",
-        required: true
+    status_order: {
+        type: String,
+        enum: ["Chưa xác nhận", "Đã xác nhận", "Đang giao hàng", "Đã giao hàng", "Đã hủy"],
+        default: "Chưa xác nhận",
     },
     id_delivery_method: {
         type: mongoose.Schema.Types.ObjectId,

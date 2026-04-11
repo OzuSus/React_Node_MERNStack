@@ -10,7 +10,19 @@ export const CheckoutContext = createContext();
 export const CheckoutProvider = ({ children }) => {
     const [deliveryMethods, setDeliveryMethods] = useState([]);
     const [isLoadingDeliveryMethods, setIsLoadingDeliveryMethods] = useState(true);
+    const [paymentMethods, setPaymentMethods] = useState([]);
     // const navigate = useNavigate();
+
+    const fetchPaymentMethods = async () => {
+        try {
+            const response = await axios.get("http://localhost:5000/paymentMethods");
+            setPaymentMethods(response.data.paymentMethods);
+        }catch (error) {
+            console.error("Lỗi khi lấy phương thức thanh toán:", error);
+        }finally {
+            setIsLoadingDeliveryMethods(false);
+        }
+    }
 
     useEffect(() => {
         const fetchDeliveryMethods = async () => {
@@ -24,20 +36,17 @@ export const CheckoutProvider = ({ children }) => {
             }
         };
         fetchDeliveryMethods();
+        fetchPaymentMethods();
     }, []);
 
-    const handlePlaceOrder = async ({idUser, idPaymentMethop, fullname, address, email, phone, idDeliveryMethop}) => {
+
+
+    const handlePlaceOrder = async (payload) => {
         try {
-            const response = await axios.post("http://localhost:8080/api/orders/place", null, {
-                params: {
-                    idUser,
-                    idPaymentMethop,
-                    fullname,
-                    address,
-                    email,
-                    phone,
-                    idDeliveryMethop
-                }
+
+            const response = await axios.post("http://localhost:5000/orders/place", payload, {
+                withCredentials: true,
+
             });
             if (response.status === 200) {
                 // await Swal.fire("Đặt hàng thành công", "Cảm ơn bạn đã mua hàng!", "success");
@@ -74,7 +83,7 @@ export const CheckoutProvider = ({ children }) => {
 
 
     return (
-        <CheckoutContext.Provider value={{deliveryMethods, isLoadingDeliveryMethods, handlePlaceOrder, createVnpayPayment}}>
+        <CheckoutContext.Provider value={{deliveryMethods, isLoadingDeliveryMethods, handlePlaceOrder, createVnpayPayment, paymentMethods, fetchPaymentMethods}}>
             {children}
         </CheckoutContext.Provider>
     );

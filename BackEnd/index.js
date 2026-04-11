@@ -38,7 +38,7 @@ app.use("/categories", categoryRoutes);
 app.use("/favorite", favoriteRoutes);
 app.use("/cart", cartRoutes);
 app.use("/deliveryMethods", deliveryMethodRoutes);
-app.use("/paymentMrthods", paymentMethodRoutes);
+app.use("/paymentMethods", paymentMethodRoutes);
 app.use("/orders", orderRoutes);
 
 
