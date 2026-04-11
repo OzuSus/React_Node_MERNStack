@@ -369,6 +369,7 @@ label[class="label__selection"]{
 }
 
 td, th{
+    text-align: center;
     font-family: sans-serif;
     border: 1px solid #D9D9D9;
     padding: 10px;

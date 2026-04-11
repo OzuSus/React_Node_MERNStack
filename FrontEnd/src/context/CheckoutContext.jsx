@@ -15,8 +15,8 @@ export const CheckoutProvider = ({ children }) => {
     useEffect(() => {
         const fetchDeliveryMethods = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/api/deliveryMethop");
-                setDeliveryMethods(response.data);
+                const response = await axios.get("http://localhost:5000/deliveryMethods");
+                setDeliveryMethods(response.data.deliveryMethods);
             } catch (error) {
                 console.error("Lỗi khi lấy phương thức giao hàng:", error);
             } finally {

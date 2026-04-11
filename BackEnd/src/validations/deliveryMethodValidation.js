@@ -9,8 +9,12 @@ export const deliveryMethodSchema = Joi.object({
         "string.empty": "Mô tả không được để trống",
         "string.base": "Mô tả phải là một chuỗi"
     }),
-    price: Joi.number().required().positive().messages({
-        "number.base": "Giá phải là một số",
-        "any.required": "Giá là bắt buộc"
-    })
+    price: Joi.number()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Gia phai la mot so",
+            "number.positive": "Gia phai la mot so duong",
+            "any.required": "Gia san pham khong duoc de trong",
+        }),
 })

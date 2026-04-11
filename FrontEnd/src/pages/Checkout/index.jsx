@@ -48,7 +48,7 @@ export default function Checkout() {
     };
     const getShippingFee = () => {
         const selected = deliveryMethods.find(
-            (method) => method.id.toString() === selectedMethodDelivery
+            (method) => method._id === selectedMethodDelivery
         );
         return selected ? selected.price : 0;
     };
@@ -210,20 +210,20 @@ export default function Checkout() {
                             <form id="delivery__method--form" className="radio__section">
                                 <input type="hidden" name="action" value="choiceDeliveryMethod"/>
                                 {deliveryMethods.map((method) => (
-                                    <div key={method.id} className="method__content">
+                                    <div key={method._id} className="method__content">
                                         <div
-                                            className={"method__item section__info--selection" + (selectedMethodDelivery === method.id.toString() ? " method__checked" : "")}>
+                                            className={"method__item section__info--selection" + (selectedMethodDelivery === method._id ? " method__checked" : "")}>
                                             <input type="radio" name="delivery__method" className="radio__button"
-                                                   value={method.id} id={`delivery__method${method.id}`}
-                                                   checked={selectedMethodDelivery === method.id.toString()}
+                                                   value={method._id} id={`delivery__method${method._id}`}
+                                                   checked={selectedMethodDelivery === method._id}
                                                    onChange={handleChangeMethopDelivery}/>
                                             <label className="label__selection"
-                                                   htmlFor={`delivery__method${method.id}`}>
+                                                   htmlFor={`delivery__method${method._id}`}>
                                                 <span>Giao hàng {method.name}</span>
                                                 <span>{method.price.toLocaleString()} ₫</span>
                                             </label>
                                         </div>
-                                        {selectedMethodDelivery === method.id.toString() && (
+                                        {selectedMethodDelivery === method._id && (
                                             <span className="description__method">
                                                 <p>{method.description}</p>
                                             </span>
@@ -289,23 +289,23 @@ export default function Checkout() {
                                         <div className="product__item">
                                             <img
                                                 src={
-                                                    item.image?.startsWith("http")
-                                                        ? item.image
-                                                        : `http://localhost:8080/uploads/${item.image || "assets/stonesjewel.jpg"}`
+                                                    item.id_product.image?.startsWith("http")
+                                                        ? item.id_product.image
+                                                        : `http://localhost:8080/uploads/${item.id_product.image || "assets/stonesjewel.jpg"}`
                                                 }
                                                 alt="Ảnh sản phẩm"
                                             />
 
                                             <div className="order__product--info">
-                                                <p className="product__name">{item.name}</p>
-                                                <p className="order__color">Loại: {categoryNames[item.categoryID] || "Không xác định"}</p>
-                                                <p className="order__size">Mô tả: {item.description || ""}</p>
+                                                <p className="product__name">{item.id_product.name}</p>
+                                                <p className="order__color">Loại: {categoryNames[item.id_product.id_category] || "Không xác định"}</p>
+                                                <p className="order__size">Mô tả: {item.id_product.description || ""}</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="td__item">{item.price.toLocaleString()}đ</td>
-                                    <td className="td__item">{item.quantity}</td>
-                                    <td className="td__item"> {(item.price * item.quantity).toLocaleString()}đ</td>
+                                    <td className="td__item">{item.id_product.price.toLocaleString()}đ</td>
+                                    <td className="td__item">{item.id_product.quantity}</td>
+                                    <td className="td__item"> {(item.id_product.price * item.quantity).toLocaleString()}đ</td>
                                 </tr>
                             ))}
                             </tbody>
