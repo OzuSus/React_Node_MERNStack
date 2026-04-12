@@ -57,7 +57,8 @@ export const CheckoutProvider = ({ children }) => {
             }
         } catch (error) {
             console.error("Lỗi đặt hàng:", error);
-            await Swal.fire("Lỗi", "Đã xảy ra lỗi trong quá trình đặt hàng.", "error");
+            const errorMessage = error.response?.data?.message || error.message || "Đã xảy ra lỗi hệ thống";
+            await Swal.fire("Lỗi", errorMessage, "error");
             return false;
         }
     };
@@ -65,7 +66,7 @@ export const CheckoutProvider = ({ children }) => {
 
     const createVnpayPayment = async (amount, content) => {
         try {
-            const response = await axios.post("http://localhost:8080/api/vnpay/create-payment", {
+            const response = await axios.post("http://localhost:5000/vnpay/vnpay_return", {
                 amount: amount,
                 content: content
             }, {

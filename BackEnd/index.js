@@ -10,6 +10,7 @@ import favoriteRoutes from "./src/routes/favorite.js"
 import cartRoutes from "./src/routes/cart.js"
 import deliveryMethodRoutes from "./src/routes/deliveryMethod.js"
 import paymentMethodRoutes from "./src/routes/paymentMethod.js"
+import vnPayRoutes from "./src/routes/VNPay.js"
 import orderRoutes from "./src/routes/Order.js"
 import {errorHandler} from "./src/middlewares/errorHandlerMiddleware.js";
 import cookieParser from "cookie-parser";
@@ -40,6 +41,7 @@ app.use("/cart", cartRoutes);
 app.use("/deliveryMethods", deliveryMethodRoutes);
 app.use("/paymentMethods", paymentMethodRoutes);
 app.use("/orders", orderRoutes);
+app.use("/vnpay", vnPayRoutes);
 
 
 app.get("/", (req, res) => res.send("API running"));

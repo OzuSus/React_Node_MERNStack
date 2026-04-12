@@ -75,9 +75,9 @@ export default function Checkout() {
         if (vnpayMethod && selectedPayment === vnpayMethod._id) {
             localStorage.setItem("pendingOrder", JSON.stringify(orderData));
             const content = `Thanh toán đơn hàng ${totalAmount} VND`;
-            const paymentUrl = await createVnpayPayment(totalAmount, content);
-            if (paymentUrl) {
-                window.location.href = paymentUrl;
+            const responseData = await createVnpayPayment(totalAmount, content);
+            if (responseData && responseData.paymentUrl) {
+                window.location.href = responseData.paymentUrl;
             }
         } else {
             const success = await handlePlaceOrder(orderData);
