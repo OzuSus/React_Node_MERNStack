@@ -1,0 +1,155 @@
+.payment-success-container {
+    font-family: "Segoe UI", sans-serif;
+    max-width: 600px;
+    margin: 80px auto;
+    text-align: center;
+    padding: 40px;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.8s ease;
+}
+
+.success-animation {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.cart-icon {
+    font-size: 100px;
+    color: #6fd67f;
+    animation: bounces 1s ease-in-out;
+}
+
+.checkmark-icon {
+    font-size: 40px;
+    color: #ffffff;
+    background: #6fd67f;
+    border-radius: 50%;
+    padding: 8px;
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    animation: pop 0.6s ease-out;
+}
+
+.success-text {
+    font-size: 28px;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+.brand-name {
+    color: #2f6eb1;
+    font-weight: bold;
+}
+
+.next-step,
+.auto-redirect {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #666;
+    max-width: 500px;
+    margin: 0 auto 20px;
+}
+
+.order-info {
+    background: #ab8ad7;
+    color: white;
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.order-id {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    height: fit-content;
+    margin: 0;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-detail {
+    background: #3e9fd5;
+    color: white;
+    border: 1px solid #3e9fd5;
+    /*margin: 0;*/
+    /*height: unset;*/
+}
+
+.btn-detail:hover {
+    background: #0056b3;
+}
+
+.btn-continue {
+    background: white;
+    color: #3e9fd5;
+    border: 1px solid #007bff;
+}
+
+.btn-continue:hover {
+    background: #f0f8ff;
+}
+
+.countdown {
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounces {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pop {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.navigation__target a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 2px solid var(--blue-color-high);
+    font-weight: 600;
+    min-width: 160px;
+    height: 48px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+.order-info {
+    /*background-color: #f0f9f5;*/
+    padding: 16px;
+    border-radius: 8px;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
