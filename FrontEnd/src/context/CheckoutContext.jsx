@@ -10,13 +10,25 @@ export const CheckoutContext = createContext();
 export const CheckoutProvider = ({ children }) => {
     const [deliveryMethods, setDeliveryMethods] = useState([]);
     const [isLoadingDeliveryMethods, setIsLoadingDeliveryMethods] = useState(true);
+    const [paymentMethods, setPaymentMethods] = useState([]);
     // const navigate = useNavigate();
+
+    const fetchPaymentMethods = async () => {
+        try {
+            const response = await axios.get("http://localhost:5000/paymentMethods");
+            setPaymentMethods(response.data.paymentMethods);
+        }catch (error) {
+            console.error("Lỗi khi lấy phương thức thanh toán:", error);
+        }finally {
+            setIsLoadingDeliveryMethods(false);
+        }
+    }
 
     useEffect(() => {
         const fetchDeliveryMethods = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/api/deliveryMethop");
-                setDeliveryMethods(response.data);
+                const response = await axios.get("http://localhost:5000/deliveryMethods");
+                setDeliveryMethods(response.data.deliveryMethods);
             } catch (error) {
                 console.error("Lỗi khi lấy phương thức giao hàng:", error);
             } finally {
@@ -24,20 +36,17 @@ export const CheckoutProvider = ({ children }) => {
             }
         };
         fetchDeliveryMethods();
+        fetchPaymentMethods();
     }, []);
 
-    const handlePlaceOrder = async ({idUser, idPaymentMethop, fullname, address, email, phone, idDeliveryMethop}) => {
+
+
+    const handlePlaceOrder = async (payload) => {
         try {
-            const response = await axios.post("http://localhost:8080/api/orders/place", null, {
-                params: {
-                    idUser,
-                    idPaymentMethop,
-                    fullname,
-                    address,
-                    email,
-                    phone,
-                    idDeliveryMethop
-                }
+
+            const response = await axios.post("http://localhost:5000/orders/place", payload, {
+                withCredentials: true,
+
             });
             if (response.status === 200) {
                 // await Swal.fire("Đặt hàng thành công", "Cảm ơn bạn đã mua hàng!", "success");
@@ -48,7 +57,8 @@ export const CheckoutProvider = ({ children }) => {
             }
         } catch (error) {
             console.error("Lỗi đặt hàng:", error);
-            await Swal.fire("Lỗi", "Đã xảy ra lỗi trong quá trình đặt hàng.", "error");
+            const errorMessage = error.response?.data?.message || error.message || "Đã xảy ra lỗi hệ thống";
+            await Swal.fire("Lỗi", errorMessage, "error");
             return false;
         }
     };
@@ -56,7 +66,7 @@ export const CheckoutProvider = ({ children }) => {
 
     const createVnpayPayment = async (amount, content) => {
         try {
-            const response = await axios.post("http://localhost:8080/api/vnpay/create-payment", {
+            const response = await axios.post("http://localhost:5000/vnpay/vnpay_return", {
                 amount: amount,
                 content: content
             }, {
@@ -74,7 +84,7 @@ export const CheckoutProvider = ({ children }) => {
 
 
     return (
-        <CheckoutContext.Provider value={{deliveryMethods, isLoadingDeliveryMethods, handlePlaceOrder, createVnpayPayment}}>
+        <CheckoutContext.Provider value={{deliveryMethods, isLoadingDeliveryMethods, handlePlaceOrder, createVnpayPayment, paymentMethods, fetchPaymentMethods}}>
             {children}
         </CheckoutContext.Provider>
     );

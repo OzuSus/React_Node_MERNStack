@@ -25,6 +25,9 @@ import {ProfileProvider} from "./context/ProfileContext.jsx";
 import ChangePassWord from "./pages/ChangePassWord/index.jsx";
 import {ChangePasswordProvider} from "./context/ChangePasswordContext.jsx";
 import ForgotPassword from "./pages/ForgotPassword/index.jsx";
+import OrderSuccess from "./pages/OrderSuccess/index.jsx";
+import FailedOrder from "./pages/FailedOrder/index.jsx";
+import VNPaymentReturn from "./pages/VNPaymentReturn/index.jsx";
 
 // import Cart from "./pages/Cart/index.jsx";
 
@@ -57,6 +60,9 @@ function App() {
                                                 <Route path="/Checkout" element={<Checkout/>}/>
                                                 <Route path="/Profile" element={<Profile/>}/>
                                                 <Route path="/ChangePassWord" element={<ChangePassWord/>}/>
+                                                <Route path="/OrderSuccess" element={<OrderSuccess/>}/>
+                                                <Route path="/FailedOrder" element={<FailedOrder/>}/>
+                                                <Route path="/payment-return" element={<VNPaymentReturn/>}/>
 
                                             </Routes>
                                         </div>

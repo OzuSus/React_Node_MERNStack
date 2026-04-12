@@ -15,10 +15,10 @@ import {CheckoutContext} from "../../context/CheckoutContext";
 export default function Checkout() {
     const { cartItems, fetchCartItems, totalPrice, categoryNames} = useContext(CartContext);
     const { user, userInfo, isLoading  } = useContext(UserContext);
-    const { deliveryMethods, isLoadingDeliveryMethods, handlePlaceOrder, createVnpayPayment  } = useContext(CheckoutContext);
+    const { deliveryMethods, isLoadingDeliveryMethods, handlePlaceOrder, createVnpayPayment, paymentMethods  } = useContext(CheckoutContext);
 
-    const [selectedMethodDelivery, setSelectedMethodDeliverty] = useState("1");
-    const [selectedPayment, setSelectedPayment] = useState("1");
+    const [selectedMethodDelivery, setSelectedMethodDeliverty] = useState();
+    const [selectedPayment, setSelectedPayment] = useState();
     const [showPopup, setShowPopup] = useState(false);
     const [deliveryName, setDeliveryName] = useState(userInfo?.fullname || "");
     const [deliveryEmail, setDeliveryEmail] = useState(userInfo?.email || "");
@@ -48,7 +48,7 @@ export default function Checkout() {
     };
     const getShippingFee = () => {
         const selected = deliveryMethods.find(
-            (method) => method.id.toString() === selectedMethodDelivery
+            (method) => method._id === selectedMethodDelivery
         );
         return selected ? selected.price : 0;
     };
@@ -59,23 +59,25 @@ export default function Checkout() {
     const handlePaymentChange = (e) => {
         setSelectedPayment(e.target.value);
     };
+    const vnpayMethod = paymentMethods.find(method => method.type_Payment === "VNPAY");
     const onPlaceOrderClick = async () => {
         const totalAmount = totalPrice + getShippingFee();
+
         const orderData = {
-            idUser: user.id,
-            idPaymentMethop: selectedPayment,
+            id_payment_method: selectedPayment,
+            id_delivery_method: selectedMethodDelivery,
             fullname: deliveryName,
             address: deliveryAddress,
             email: deliveryEmail,
             phone: deliveryPhone,
-            idDeliveryMethop: selectedMethodDelivery
+
         };
-        if (selectedPayment === "3") {
+        if (vnpayMethod && selectedPayment === vnpayMethod._id) {
             localStorage.setItem("pendingOrder", JSON.stringify(orderData));
             const content = `Thanh toán đơn hàng ${totalAmount} VND`;
-            const paymentUrl = await createVnpayPayment(totalAmount, content);
-            if (paymentUrl) {
-                window.location.href = paymentUrl;
+            const responseData = await createVnpayPayment(totalAmount, content);
+            if (responseData && responseData.paymentUrl) {
+                window.location.href = responseData.paymentUrl;
             }
         } else {
             const success = await handlePlaceOrder(orderData);
@@ -210,20 +212,20 @@ export default function Checkout() {
                             <form id="delivery__method--form" className="radio__section">
                                 <input type="hidden" name="action" value="choiceDeliveryMethod"/>
                                 {deliveryMethods.map((method) => (
-                                    <div key={method.id} className="method__content">
+                                    <div key={method._id} className="method__content">
                                         <div
-                                            className={"method__item section__info--selection" + (selectedMethodDelivery === method.id.toString() ? " method__checked" : "")}>
+                                            className={"method__item section__info--selection" + (selectedMethodDelivery === method._id ? " method__checked" : "")}>
                                             <input type="radio" name="delivery__method" className="radio__button"
-                                                   value={method.id} id={`delivery__method${method.id}`}
-                                                   checked={selectedMethodDelivery === method.id.toString()}
+                                                   value={method._id} id={`delivery__method${method._id}`}
+                                                   checked={selectedMethodDelivery === method._id}
                                                    onChange={handleChangeMethopDelivery}/>
                                             <label className="label__selection"
-                                                   htmlFor={`delivery__method${method.id}`}>
+                                                   htmlFor={`delivery__method${method._id}`}>
                                                 <span>Giao hàng {method.name}</span>
                                                 <span>{method.price.toLocaleString()} ₫</span>
                                             </label>
                                         </div>
-                                        {selectedMethodDelivery === method.id.toString() && (
+                                        {selectedMethodDelivery === method._id && (
                                             <span className="description__method">
                                                 <p>{method.description}</p>
                                             </span>
@@ -241,31 +243,44 @@ export default function Checkout() {
                             </div>
                             <form id="payment__method--form" className="radio__section">
                                 <input type="hidden" name="action" value="choicePaymentMethod"/>
+                                {paymentMethods.map((method) => (
+                                    <div className="method__content">
+                                        <div
+                                            className={"method__item section__info--selection" + (selectedPayment === method._id ? " method__checked" : "")}>
+                                            <input type="radio" name="payment__method" className="radio__button"
+                                                   id="payment__method1" value={method._id} checked={selectedPayment === method._id}
+                                                   onChange={handlePaymentChange}/>
+                                            <label className="lable__payment__title" htmlFor="payment__method1">
+                                                Thanh Toan bang {method.type_Payment}
+                                            </label>
+                                        </div>
+                                    </div>
+                                ))}
 
                                 {/* COD */}
-                                <div className="method__content">
-                                    <div
-                                        className={"method__item section__info--selection" + (selectedPayment === "1" ? " method__checked" : "")}>
-                                        <input type="radio" name="payment__method" className="radio__button"
-                                               id="payment__method1" value="1" checked={selectedPayment === "1"}
-                                               onChange={handlePaymentChange}/>
-                                        <label className="lable__payment__title" htmlFor="payment__method1">
-                                            Thanh toán khi nhận hàng (COD)
-                                        </label>
-                                    </div>
-                                </div>
+                                {/*<div className="method__content">*/}
+                                {/*    <div*/}
+                                {/*        className={"method__item section__info--selection" + (selectedPayment === "1" ? " method__checked" : "")}>*/}
+                                {/*        <input type="radio" name="payment__method" className="radio__button"*/}
+                                {/*               id="payment__method1" value="1" checked={selectedPayment === "1"}*/}
+                                {/*               onChange={handlePaymentChange}/>*/}
+                                {/*        <label className="lable__payment__title" htmlFor="payment__method1">*/}
+                                {/*            Thanh toán khi nhận hàng (COD)*/}
+                                {/*        </label>*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
 
-                                <div className="method__content">
-                                    <div
-                                        className={"method__item section__info--selection" + (selectedPayment === "3" ? " method__checked" : "")}>
-                                        <input type="radio" name="payment__method" className="radio__button"
-                                               id="payment__method3" value="3" checked={selectedPayment === "3"}
-                                               onChange={handlePaymentChange}/>
-                                        <label className="lable__payment__title" htmlFor="payment__method3">
-                                            Thanh toán VNPAY
-                                        </label>
-                                    </div>
-                                </div>
+                                {/*<div className="method__content">*/}
+                                {/*    <div*/}
+                                {/*        className={"method__item section__info--selection" + (selectedPayment === "3" ? " method__checked" : "")}>*/}
+                                {/*        <input type="radio" name="payment__method" className="radio__button"*/}
+                                {/*               id="payment__method3" value="3" checked={selectedPayment === "3"}*/}
+                                {/*               onChange={handlePaymentChange}/>*/}
+                                {/*        <label className="lable__payment__title" htmlFor="payment__method3">*/}
+                                {/*            Thanh toán VNPAY*/}
+                                {/*        </label>*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
                             </form>
                         </div>
                     </div>
@@ -289,23 +304,23 @@ export default function Checkout() {
                                         <div className="product__item">
                                             <img
                                                 src={
-                                                    item.image?.startsWith("http")
-                                                        ? item.image
-                                                        : `http://localhost:8080/uploads/${item.image || "assets/stonesjewel.jpg"}`
+                                                    item.id_product.image?.startsWith("http")
+                                                        ? item.id_product.image
+                                                        : `http://localhost:8080/uploads/${item.id_product.image || "assets/stonesjewel.jpg"}`
                                                 }
                                                 alt="Ảnh sản phẩm"
                                             />
 
                                             <div className="order__product--info">
-                                                <p className="product__name">{item.name}</p>
-                                                <p className="order__color">Loại: {categoryNames[item.categoryID] || "Không xác định"}</p>
-                                                <p className="order__size">Mô tả: {item.description || ""}</p>
+                                                <p className="product__name">{item.id_product.name}</p>
+                                                <p className="order__color">Loại: {categoryNames[item.id_product.id_category] || "Không xác định"}</p>
+                                                <p className="order__size">Mô tả: {item.id_product.description || ""}</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="td__item">{item.price.toLocaleString()}đ</td>
-                                    <td className="td__item">{item.quantity}</td>
-                                    <td className="td__item"> {(item.price * item.quantity).toLocaleString()}đ</td>
+                                    <td className="td__item">{item.id_product.price.toLocaleString()}đ</td>
+                                    <td className="td__item">{item.id_product.quantity}</td>
+                                    <td className="td__item"> {(item.id_product.price * item.quantity).toLocaleString()}đ</td>
                                 </tr>
                             ))}
                             </tbody>
