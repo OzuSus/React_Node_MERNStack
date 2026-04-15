@@ -63,3 +63,11 @@ export async function placeOrderService(userId, formData) {
     }
     return order;
 }
+
+export async function getOrderByStatusService(userId, status) {
+    const orders = await Order.find({id_user: userId, status_order: status});
+    if (!orders || orders.length === 0) {
+        throw new ApiError(404, "Chưa có đơn hàng!");
+    }
+    return orders;
+}

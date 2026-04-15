@@ -28,6 +28,7 @@ import ForgotPassword from "./pages/ForgotPassword/index.jsx";
 import OrderSuccess from "./pages/OrderSuccess/index.jsx";
 import FailedOrder from "./pages/FailedOrder/index.jsx";
 import VNPaymentReturn from "./pages/VNPaymentReturn/index.jsx";
+import PurchaseHistory from "./pages/PurchaseHistory/index.jsx";
 
 // import Cart from "./pages/Cart/index.jsx";
 
@@ -63,6 +64,7 @@ function App() {
                                                 <Route path="/OrderSuccess" element={<OrderSuccess/>}/>
                                                 <Route path="/FailedOrder" element={<FailedOrder/>}/>
                                                 <Route path="/payment-return" element={<VNPaymentReturn/>}/>
+                                                <Route path="/PurchaseHistory" element={<PurchaseHistory/>}/>
 
                                             </Routes>
                                         </div>
