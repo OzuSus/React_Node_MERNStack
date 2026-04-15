@@ -12,6 +12,7 @@ import deliveryMethodRoutes from "./src/routes/deliveryMethod.js"
 import paymentMethodRoutes from "./src/routes/paymentMethod.js"
 import vnPayRoutes from "./src/routes/VNPay.js"
 import orderRoutes from "./src/routes/Order.js"
+import statusOrderRoutes from "./src/routes/statusOrder.js"
 import {errorHandler} from "./src/middlewares/errorHandlerMiddleware.js";
 import cookieParser from "cookie-parser";
 import path from "path";
@@ -42,6 +43,7 @@ app.use("/deliveryMethods", deliveryMethodRoutes);
 app.use("/paymentMethods", paymentMethodRoutes);
 app.use("/orders", orderRoutes);
 app.use("/vnpay", vnPayRoutes);
+app.use("/statusOrder", statusOrderRoutes);
 
 
 app.get("/", (req, res) => res.send("API running"));
