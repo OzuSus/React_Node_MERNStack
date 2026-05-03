@@ -13,16 +13,26 @@ export const PurchaseHistoryProvider = ({ children }) => {
     const { user } = useContext(UserContext);
 
     useEffect(() => {
-        if (user?.id) {
-            fetchAllStatuses();
-            fetchAllOrders(user.id);
-        }
+        const initData = async () => {
+            console.log("User in PurchaseHistoryProvider:", user);
+            if (user?.id) {
+                await Promise.all([fetchAllStatuses(), fetchAllOrders()]);
+            } else {
+                setLoading(false);
+            }
+        };
+        initData();
     }, [user]);
 
     const fetchAllStatuses = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/orders/statuses");
-            setAllStatuses(response.data);
+            const response = await axios.get("http://localhost:5000/statusOrder",{
+                    withCredentials: true,
+            });
+            // Đảm bảo lấy đúng mảng statusOrders từ object trả về
+            if (response.data && response.data.statusOrders) {
+                setAllStatuses(response.data.statusOrders);
+            }
         } catch (err) {
             console.error("Error fetching statuses", err);
             setError(true);
@@ -32,8 +42,10 @@ export const PurchaseHistoryProvider = ({ children }) => {
     const fetchAllOrders = async (userId) => {
         // setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:8080/api/orders/user/${userId}`);
-            setOrders(response.data);
+            const response = await axios.get(`http://localhost:5000/orders/${user.id}`,{
+                withCredentials: true,
+            });
+            setOrders(response.data.orders || []);
             setError(false);
         } catch (err) {
             console.error("Error fetching all orders", err);
@@ -43,25 +55,25 @@ export const PurchaseHistoryProvider = ({ children }) => {
         }
     };
 
-    const fetchOrdersByStatus = async (statusId, userId) => {
-        // setLoading(true);
-        try {
-            if (statusId === null) {
-                await fetchAllOrders(userId);
-            } else {
-                const response = await axios.get(
-                    `http://localhost:8080/api/orders/filter-by-status/${statusId}/${userId}`
-                );
-                setOrders(response.data);
-            }
-            setError(false);
-        } catch (err) {
-            console.error("Error fetching orders by status", err);
-            setError(true);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // const fetchOrdersByStatus = async (statusId, userId) => {
+    //     // setLoading(true);
+    //     try {
+    //         if (statusId === null) {
+    //             await fetchAllOrders(userId);
+    //         } else {
+    //             const response = await axios.get(
+    //                 `http://localhost:8080/api/orders/filter-by-status/${statusId}/${userId}`
+    //             );
+    //             setOrders(response.data);
+    //         }
+    //         setError(false);
+    //     } catch (err) {
+    //         console.error("Error fetching orders by status", err);
+    //         setError(true);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     const handleStatusChange = (statusId) => {
         setSelectedStatus(statusId);

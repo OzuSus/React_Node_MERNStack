@@ -29,54 +29,58 @@ import OrderSuccess from "./pages/OrderSuccess/index.jsx";
 import FailedOrder from "./pages/FailedOrder/index.jsx";
 import VNPaymentReturn from "./pages/VNPaymentReturn/index.jsx";
 import PurchaseHistory from "./pages/PurchaseHistory/index.jsx";
+import {PurchaseHistoryProvider} from "./context/PurchaseHistoryContext.jsx";
 
 // import Cart from "./pages/Cart/index.jsx";
 
 function App() {
     return (
-        <CheckoutProvider>
-            <CategoryProvider>
-                <FilterProvider>
-                    <ProfileProvider>
-                        <CartProvider>
-                            <FavoriteProvider>
-                                <ChangePasswordProvider>
-                                    <BrowserRouter>
-                                        <Header/>
-                                        <div className="mainApp">
-                                            <Routes>
-                                                <Route path="/" element={<Home/>}/>
-                                                <Route path="/Home" element={<Home/>}/>
-                                                <Route path="/Shop" element={<Shop/>}/>
-                                                <Route path="/Cart" element={<Cart/>}/>
-                                                <Route path="/Login" element={<Login/>}/>
-                                                <Route path="/Forgot-Password" element={<ForgotPassword/>}/>
-                                                <Route path="/Register" element={<Register/>}/>
-                                                <Route path="/Favorite" element={<Favorite/>}/>
-                                                <Route path="/Products/:prodID" element={
-                                                    <ProductProvider>
-                                                        <ProductDetails/>
-                                                    </ProductProvider>
-                                                }/>
-                                                <Route path="/Checkout" element={<Checkout/>}/>
-                                                <Route path="/Profile" element={<Profile/>}/>
-                                                <Route path="/ChangePassWord" element={<ChangePassWord/>}/>
-                                                <Route path="/OrderSuccess" element={<OrderSuccess/>}/>
-                                                <Route path="/FailedOrder" element={<FailedOrder/>}/>
-                                                <Route path="/payment-return" element={<VNPaymentReturn/>}/>
-                                                <Route path="/PurchaseHistory" element={<PurchaseHistory/>}/>
+        <PurchaseHistoryProvider>
+            <CheckoutProvider>
+                <CategoryProvider>
+                    <FilterProvider>
+                        <ProfileProvider>
+                            <CartProvider>
+                                <FavoriteProvider>
+                                    <ChangePasswordProvider>
+                                        <BrowserRouter>
+                                            <Header/>
+                                            <div className="mainApp">
+                                                <Routes>
+                                                    <Route path="/" element={<Home/>}/>
+                                                    <Route path="/Home" element={<Home/>}/>
+                                                    <Route path="/Shop" element={<Shop/>}/>
+                                                    <Route path="/Cart" element={<Cart/>}/>
+                                                    <Route path="/Login" element={<Login/>}/>
+                                                    <Route path="/Forgot-Password" element={<ForgotPassword/>}/>
+                                                    <Route path="/Register" element={<Register/>}/>
+                                                    <Route path="/Favorite" element={<Favorite/>}/>
+                                                    <Route path="/Products/:prodID" element={
+                                                        <ProductProvider>
+                                                            <ProductDetails/>
+                                                        </ProductProvider>
+                                                    }/>
+                                                    <Route path="/Checkout" element={<Checkout/>}/>
+                                                    <Route path="/Profile" element={<Profile/>}/>
+                                                    <Route path="/ChangePassWord" element={<ChangePassWord/>}/>
+                                                    <Route path="/OrderSuccess" element={<OrderSuccess/>}/>
+                                                    <Route path="/FailedOrder" element={<FailedOrder/>}/>
+                                                    <Route path="/payment-return" element={<VNPaymentReturn/>}/>
+                                                    <Route path="/PurchaseHistory" element={<PurchaseHistory/>}/>
 
-                                            </Routes>
-                                        </div>
-                                        <Footer/>
-                                    </BrowserRouter>
-                                </ChangePasswordProvider>
-                            </FavoriteProvider>
-                        </CartProvider>
-                    </ProfileProvider>
-                </FilterProvider>
-            </CategoryProvider>
-        </CheckoutProvider>
+                                                </Routes>
+                                            </div>
+                                            <Footer/>
+                                        </BrowserRouter>
+                                    </ChangePasswordProvider>
+                                </FavoriteProvider>
+                            </CartProvider>
+                        </ProfileProvider>
+                    </FilterProvider>
+                </CategoryProvider>
+            </CheckoutProvider>
+        </PurchaseHistoryProvider>
+
     )
 }
 

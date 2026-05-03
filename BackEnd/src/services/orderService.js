@@ -32,6 +32,7 @@ export async function placeOrderService(userId, formData) {
     }
     const shippingFee = deliveryMethod.price;
 
+
     let itemsTotalPrice = 0;
     for (const item of cartItems) {
         const product = await Product.findById(item.id_product);
@@ -64,6 +65,7 @@ export async function placeOrderService(userId, formData) {
     return order;
 }
 
+
 export async function getOrderByStatusService(userId, status) {
     const orders = await Order.find({id_user: userId, status_order: status});
     if (!orders || orders.length === 0) {
@@ -71,3 +73,13 @@ export async function getOrderByStatusService(userId, status) {
     }
     return orders;
 }
+
+export async function getOrderByUserService(userId) {
+    const orders = await Order.find({id_user: userId});
+    if (!orders || orders.length === 0) {
+        throw new ApiError(404, "Chưa có đơn hàng!");
+    }
+
+    return orders;
+}
+

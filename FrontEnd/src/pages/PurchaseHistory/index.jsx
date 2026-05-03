@@ -65,6 +65,7 @@ export default function PurchaseHistory() {
                         <h1 className="title title_profile">Lịch sử mua hàng</h1>
 
                         {/* Filter by status */}
+                        {/* Filter by status */}
                         <div className="statusOrder">
                             <button
                                 className={`status__list ${selectedStatus === null ? 'status__list--click' : ''}`}
@@ -72,11 +73,12 @@ export default function PurchaseHistory() {
                             >
                                 Tất cả
                             </button>
+
                             {allStatuses.map(status => (
                                 <button
-                                    key={status.id}
-                                    className={`status__list ${selectedStatus === status.id ? 'status__list--click' : ''}`}
-                                    onClick={() => handleStatusChange(status.id)}
+                                    key={status._id} // Đổi thành _id
+                                    className={`status__list ${selectedStatus === status._id ? 'status__list--click' : ''}`} // Đổi thành _id
+                                    onClick={() => handleStatusChange(status._id)} // Đổi thành _id
                                 >
                                     {status.name}
                                 </button>

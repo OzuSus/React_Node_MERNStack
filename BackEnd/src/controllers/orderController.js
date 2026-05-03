@@ -1,4 +1,9 @@
-import {getAllOrderService, getOrderByStatusService, placeOrderService} from "../services/orderService.js";
+import {
+    getAllOrderService,
+    getOrderByStatusService,
+    getOrderByUserService,
+    placeOrderService
+} from "../services/orderService.js";
 
 export async function getAllOrders(req,res,next) {
     try {
@@ -29,4 +34,15 @@ export async function getOrderByStatus(req,res,next) {
     }catch (err){
         next(err);
     }
+}
+
+export async function getOrderByUser(req,res,next) {
+    try {
+        const userId = req.params.userId;
+        const orders = await getOrderByUserService(userId);
+        return res.status(200).json({message: "Lấy đơn hàng theo người dùng thành công!", orders});
+    }catch (err){
+        next(err);
+    }
+
 }
