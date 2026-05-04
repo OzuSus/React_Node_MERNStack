@@ -170,7 +170,7 @@ export default function PurchaseHistory() {
                                                         Số lượng: {detail.quantity || "N/A"}
                                                     </p>
                                                     <p className="info__product">
-                                                        Giá: {formatPrice(detail.price || product.price)}
+                                                        Giá: {formatPrice(detail.id_product.price || product.price)}
                                                     </p>
                                                 </div>
                                                 {order.status_order?._id === 8 && (
