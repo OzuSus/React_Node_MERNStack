@@ -6,6 +6,7 @@ import Cart from "../models/Cart.js";
 import OrderDetail from "../models/OrderDetail.js";
 import DeliveryMethod from "../models/DeliveryMethod.js";
 import path from "path";
+import StatusOrder from "../models/StatusOrder.js";
 
 export async function getAllOrderService(page, limit) {
     const numericPage = Number(page) || 1;
@@ -68,11 +69,36 @@ export async function placeOrderService(userId, formData) {
 
 
 export async function getOrderByStatusService(userId, status) {
-    const orders = await Order.find({id_user: userId, status_order: status});
+    const orders = await Order.find({id_user: userId, status_order: status})
+        .populate({
+            path: "id_user",
+            select: "-password"
+        })
+        .populate("id_payment_method")
+        .populate("status_order")
+        .populate("id_delivery_method");
+
     if (!orders || orders.length === 0) {
-        throw new ApiError(404, "Chưa có đơn hàng!");
+        return { message: "Chưa có đơn hàng!", orders: [] };
     }
-    return orders;
+    const ordersWithDetails = await Promise.all(
+        orders.map(async (order) => {
+            const orderDetails = await OrderDetail.find({ id_order: order._id })
+                .populate({
+                    path: "id_product",
+                    select: "name price image id_category",
+                    populate: {
+                        path: "id_category",
+                        select: "name description"
+                    }
+                });
+            return {
+                ...order.toObject(),
+                orderDetails
+            };
+        })
+    );
+    return ordersWithDetails;
 }
 
 export async function getOrderByUserService(userId) {
@@ -107,4 +133,24 @@ export async function getOrderByUserService(userId) {
     );
 
     return ordersWithDetails;
+}
+export async function cancelOrderService(orderId, userId) {
+    const order = await Order.findOne({ _id: orderId, id_user: userId }).populate("status_order");
+    if (!order) {
+        throw new ApiError(404, "Đơn hàng không tồn tại hoặc không thuộc về người dùng.");
+    }
+    if (!order.status_order || !order.status_order.name) {
+        throw new ApiError(400, "Trạng thái đơn hàng không hợp lệ.");
+    }
+    if (order.status_order.name !== "Chưa xác nhận") {
+        throw new ApiError(400, "Trạng thái đơn hàng không thể hủy đơn hàng!");
+    }
+
+    const canceledStatus = await StatusOrder.findOne({ name: "Đã hủy" });
+    if (!canceledStatus) {
+        throw new ApiError(404, "Trạng thái 'Đã hủy' không tồn tại.");
+    }
+
+    order.status_order = canceledStatus._id;
+    await order.save();
 }

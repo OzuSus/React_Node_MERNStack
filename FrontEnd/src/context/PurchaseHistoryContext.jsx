@@ -45,33 +45,44 @@ export const PurchaseHistoryProvider = ({ children }) => {
         }
     };
 
-    // const fetchOrdersByStatus = async (statusId, userId) => {
-    //     // setLoading(true);
-    //     try {
-    //         if (statusId === null) {
-    //             await fetchAllOrders(userId);
-    //         } else {
-    //             const response = await axios.get(
-    //                 `http://localhost:8080/api/orders/filter-by-status/${statusId}/${userId}`
-    //             );
-    //             setOrders(response.data);
-    //         }
-    //         setError(false);
-    //     } catch (err) {
-    //         console.error("Error fetching orders by status", err);
-    //         setError(true);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
+    const fetchOrdersByStatus = async (statusId, userId) => {
+        setLoading(true);
+        try {
+            if (statusId === null) {
+                await fetchAllOrders(userId);
+            } else {
+                const response = await axios.get(
+                    `http://localhost:5000/orders/orderByStatus?status=${statusId}`,{
+                        withCredentials: true,
+                    }
+                );
+                setOrders(response.data.orders);
+            }
+            setError(false);
+        } catch (err) {
+            console.error("Error fetching orders by status", err);
+            setError(true);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleStatusChange = (statusId) => {
         setSelectedStatus(statusId);
-        fetchOrdersByStatus(statusId, user?.id);
+        fetchOrdersByStatus(statusId, user?._id);
     };
 
-    const cancelOrder = (orderId, userId) => {
-        return axios.put(`http://localhost:8080/api/orders/cancel?orderId=${orderId}&userId=${userId}`);
+    const cancelOrder = async (orderId) => {
+        try {
+            await axios.put(
+                `http://localhost:5000/orders/cancel`,
+                { orderId },
+                { withCredentials: true }
+            );
+        } catch (err) {
+            console.error("Error canceling order", err);
+            throw err;
+        }
     };
 
     const formatDate = (dateString) => {

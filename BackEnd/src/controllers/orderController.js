@@ -1,4 +1,5 @@
 import {
+    cancelOrderService,
     getAllOrderService,
     getOrderByStatusService,
     getOrderByUserService,
@@ -29,8 +30,8 @@ export async function getOrderByStatus(req,res,next) {
     try{
         const userId = req.user.id;
         const status = req.query.status;
-        const order = await getOrderByStatusService(userId, status);
-        return res.status(200).json({message: "Lấy đơn hàng theo trạng thái thành công!"}, order);
+        const orders = await getOrderByStatusService(userId, status);
+        return res.status(200).json({message: "Lấy đơn hàng theo người dùng thành công!", orders});
     }catch (err){
         next(err);
     }
@@ -44,5 +45,15 @@ export async function getOrderByUser(req,res,next) {
     }catch (err){
         next(err);
     }
+}
 
+export async function cancelOrder(req,res,next) {
+    try{
+        const { orderId } = req.body;
+        const userId = req.user.id;
+        await cancelOrderService(orderId, userId);
+        return res.status(200).json({message: "Hủy đơn hàng thành công!"});
+    }catch (err){
+        next(err);
+    }
 }
