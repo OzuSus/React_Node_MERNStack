@@ -45,16 +45,13 @@ export default function PurchaseHistory() {
     const handleCancelClick = async (orderId, userId) => {
         const result = await showConfirmDialog("Bạn có muốn hủy đơn hàng này không?", "warning");
         if (result.isConfirmed) {
-        } else {
-            return;
-        }
-
-        try {
-            await cancelOrder(orderId, userId);
-            await showSuccessDialog("Thành công", "Đơn hàng đã được hủy.");
-            handleStatusChange(selectedStatus);
-        } catch (error) {
-            await showErrorDialog("Lỗi", "Không thể hủy đơn hàng.");
+            try {
+                await cancelOrder(orderId, userId);
+                await showSuccessDialog("Thành công", "Đơn hàng đã được hủy.");
+                handleStatusChange(selectedStatus);
+            } catch (error) {
+                await showErrorDialog("Lỗi", "Không thể hủy đơn hàng.");
+            }
         }
     };
 
@@ -84,9 +81,9 @@ export default function PurchaseHistory() {
 
                             {allStatuses.map(status => (
                                 <button
-                                    key={status._id} // Đổi thành _id
+                                    key={status._id}
                                     className={`status__list ${selectedStatus === status._id ? 'status__list--click' : ''}`} // Đổi thành _id
-                                    onClick={() => handleStatusChange(status._id)} // Đổi thành _id
+                                    onClick={() => handleStatusChange(status._id)}
                                 >
                                     {status.name}
                                 </button>
@@ -108,10 +105,8 @@ export default function PurchaseHistory() {
                         ) : (
                             (Array.isArray(orders) ? orders : []).map(order => (
                                 <div key={order._id} className="service__order service__order--show">
-                                    {/* Order header */}
                                     <div className="order__info">
                                         <div className="order__row">
-                                            {/*<p><strong>Mã đơn hàng:</strong> #{order._id}</p>*/}
                                             <p><strong>Ngày đặt:</strong> {formatDate(order.date_order)}</p>
                                             <p><strong>Trạng thái:</strong>
                                                 {order.status_order ? (
@@ -134,10 +129,10 @@ export default function PurchaseHistory() {
                                             <p><strong>Địa chỉ:</strong> {order.address}</p>
                                         </div>
 
-                                        {order.status?.id === 5 && (
+                                        {order.status_order?.name === 'Chưa xác nhận' && (
                                             <button
                                                 className="btn__cancel-order"
-                                                onClick={() => handleCancelClick(order.idOrder, user.id)}
+                                                onClick={() => handleCancelClick(order._id, user.id)}
                                             >
                                                 Hủy đơn hàng
                                             </button>
