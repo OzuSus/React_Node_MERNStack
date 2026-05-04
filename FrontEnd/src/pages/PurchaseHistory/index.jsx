@@ -1,6 +1,6 @@
 import "./purchaseHistory.css";
 import Loader from "../../components/Loader";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 
 import {PurchaseHistoryContext} from "../../context/PurchaseHistoryContext";
 import {CategoryContext} from "../../context/CategoryContext";
@@ -19,11 +19,25 @@ export default function PurchaseHistory() {
         formatDate,
         formatPrice,
         cleanImageUrl,
-        cancelOrder
+        cancelOrder,
+        fetchAllStatuses,
+        fetchAllOrders,
     } = useContext(PurchaseHistoryContext);
     const {categoryMap} = useContext(CategoryContext);
-    const {user} = useContext(UserContext);
+    const {user,isLoading} = useContext(UserContext);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (isLoading) return;
+
+        if (!user) {
+            navigate("/Home");
+            return;
+        }
+
+        fetchAllStatuses();
+        fetchAllOrders(user?._id);
+    }, [user, isLoading]);
     const handleReviewClick = (productId) => {
         navigate(`/Products/${productId}`);
     };
