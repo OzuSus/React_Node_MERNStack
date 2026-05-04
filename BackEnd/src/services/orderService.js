@@ -5,6 +5,7 @@ import CartDetail from "../models/CartDetail.js";
 import Cart from "../models/Cart.js";
 import OrderDetail from "../models/OrderDetail.js";
 import DeliveryMethod from "../models/DeliveryMethod.js";
+import path from "path";
 
 export async function getAllOrderService(page, limit) {
     const numericPage = Number(page) || 1;
@@ -75,11 +76,35 @@ export async function getOrderByStatusService(userId, status) {
 }
 
 export async function getOrderByUserService(userId) {
-    const orders = await Order.find({id_user: userId});
+    const orders = await Order.find({ id_user: userId })
+        .populate({
+            path: "id_user",
+            select: "-password"
+        })
+        .populate("id_payment_method")
+        .populate("status_order")
+        .populate("id_delivery_method");
+
     if (!orders || orders.length === 0) {
-        throw new ApiError(404, "Chưa có đơn hàng!");
+        return { message: "Chưa có đơn hàng!", orders: [] };
     }
+    const ordersWithDetails = await Promise.all(
+        orders.map(async (order) => {
+            const orderDetails = await OrderDetail.find({ id_order: order._id })
+                .populate({
+                    path: "id_product",
+                    select: "name price image id_category",
+                    populate: {
+                        path: "id_category",
+                        select: "name description"
+                    }
+                });
+            return {
+                ...order.toObject(),
+                orderDetails
+            };
+        })
+    );
 
-    return orders;
+    return ordersWithDetails;
 }
-

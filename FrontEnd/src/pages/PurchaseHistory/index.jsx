@@ -45,19 +45,14 @@ export default function PurchaseHistory() {
     const handleCancelClick = async (orderId, userId) => {
         const result = await showConfirmDialog("Bạn có muốn hủy đơn hàng này không?", "warning");
         if (result.isConfirmed) {
-            // Người dùng bấm OK
-            // console.log("Xác nhận OK");
         } else {
-            // Người dùng bấm Hủy hoặc đóng popup
-            // console.log("Đã hủy");
             return;
         }
 
         try {
-            await cancelOrder(orderId, userId);  // gọi và chờ axios xong
+            await cancelOrder(orderId, userId);
             await showSuccessDialog("Thành công", "Đơn hàng đã được hủy.");
-            // Gọi lại fetch order hoặc cập nhật UI ở đây
-            handleStatusChange(selectedStatus); // ví dụ gọi lại hàm fetch lọc đơn theo trạng thái hiện tại
+            handleStatusChange(selectedStatus);
         } catch (error) {
             await showErrorDialog("Lỗi", "Không thể hủy đơn hàng.");
         }
@@ -78,7 +73,6 @@ export default function PurchaseHistory() {
                     <section className="service__section service__section--show">
                         <h1 className="title title_profile">Lịch sử mua hàng</h1>
 
-                        {/* Filter by status */}
                         {/* Filter by status */}
                         <div className="statusOrder">
                             <button
@@ -101,10 +95,10 @@ export default function PurchaseHistory() {
 
                         {/* Order list */}
                         {loading ? (
-                            <Loader/>
+                            <Loader />
                         ) : error ? (
                             <div className="error-message">Đã xảy ra lỗi khi tải dữ liệu</div>
-                        ) : orders.length === 0 ? (
+                        ) : (Array.isArray(orders) && orders.length === 0) ? (
                             <div className="block__product">
                                 <div className="block__product--history">
                                     <div className="imgNoneProduct"></div>
@@ -112,17 +106,17 @@ export default function PurchaseHistory() {
                                 </div>
                             </div>
                         ) : (
-                            orders.map(order => (
-                                <div key={order.idOrder} className="service__order service__order--show">
+                            (Array.isArray(orders) ? orders : []).map(order => (
+                                <div key={order._id} className="service__order service__order--show">
                                     {/* Order header */}
                                     <div className="order__info">
                                         <div className="order__row">
-                                            <p><strong>Mã đơn hàng:</strong> #{order.idOrder}</p>
-                                            <p><strong>Ngày đặt:</strong> {formatDate(order.dateOrder)}</p>
+                                            {/*<p><strong>Mã đơn hàng:</strong> #{order._id}</p>*/}
+                                            <p><strong>Ngày đặt:</strong> {formatDate(order.date_order)}</p>
                                             <p><strong>Trạng thái:</strong>
-                                                {order.status ? (
-                                                    <span className={`status-badge status-${order.status.id}`}>
-                                                        {order.status.name}
+                                                {order.status_order ? (
+                                                    <span className={`status-badge status-${order.status_order.name}`}>
+                                                        {order.status_order.name}
                                                     </span>
                                                 ) : (
                                                     <span className="status-badge">Không xác định</span>
@@ -130,12 +124,9 @@ export default function PurchaseHistory() {
                                             </p>
                                         </div>
                                         <div className="order__row">
-                                            <p><strong>Thanh toán:</strong> {order.paymentMethod?.type_payment || "N/A"}
-                                            </p>
-                                            <p><strong>Vận
-                                                chuyển:</strong>{" "}{order.deliveryMethop ? `${order.deliveryMethop.name} (${formatPrice(order.deliveryMethop.price)})` : "N/A"}
-                                            </p>
-                                            <p><strong>Tổng tiền:</strong> {formatPrice(order.totalPrice)}</p>
+                                            <p><strong>Thanh toán:</strong> {order.id_payment_method.type_Payment || "N/A"}</p>
+                                            <p><strong>Vận chuyển:</strong>{" "}{order.id_delivery_method ? `${order.id_delivery_method.name} (${formatPrice(order.id_delivery_method.price)})` : "N/A"}</p>
+                                            <p><strong>Tổng tiền:</strong> {formatPrice(order.total_price)}</p>
                                         </div>
                                         <div className="order__row">
                                             <p><strong>Họ tên:</strong> {order.fullname}</p>
@@ -143,7 +134,7 @@ export default function PurchaseHistory() {
                                             <p><strong>Địa chỉ:</strong> {order.address}</p>
                                         </div>
 
-                                        {order.status?.id === 5 && ( // 5 là id chưa xác nhận
+                                        {order.status?.id === 5 && (
                                             <button
                                                 className="btn__cancel-order"
                                                 onClick={() => handleCancelClick(order.idOrder, user.id)}
@@ -153,11 +144,10 @@ export default function PurchaseHistory() {
                                         )}
                                     </div>
 
-                                    {/* Order details */}
                                     {order.orderDetails?.map((detail, idx) => {
-                                        const product = detail.product || {};
+                                        const product = detail.id_product || {};
                                         return (
-                                            <div key={`${order.idOrder}-${idx}`} className="block__product">
+                                            <div key={`${order._id}-${idx}`} className="block__product">
                                                 <img
                                                     className="img__product block__img"
                                                     src={
@@ -174,8 +164,7 @@ export default function PurchaseHistory() {
                                                         {product.name || "Không có tên sản phẩm"}
                                                     </p>
                                                     <p className="info__product">
-                                                        Phân
-                                                        loại: {categoryMap[detail.product.categoryID] || "Không rõ"}
+                                                        Phân loại: {detail.id_category?.name || "Không rõ"}
                                                     </p>
                                                     <p className="info__product">
                                                         Số lượng: {detail.quantity || "N/A"}
@@ -184,7 +173,7 @@ export default function PurchaseHistory() {
                                                         Giá: {formatPrice(detail.price || product.price)}
                                                     </p>
                                                 </div>
-                                                {order.status?.id === 8 && (
+                                                {order.status_order?._id === 8 && (
                                                     <button className="btn__review btn"
                                                             onClick={() => handleReviewClick(detail.product.id)}>Đánh
                                                         giá</button>
