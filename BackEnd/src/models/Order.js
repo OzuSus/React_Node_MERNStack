@@ -36,9 +36,10 @@ const OrderSchema = mongoose.Schema({
         required: true
     },
     status_order: {
-        type: String,
-        enum: ["Chưa xác nhận", "Đã xác nhận", "Đang giao hàng", "Đã giao hàng", "Đã hủy"],
-        default: "Chưa xác nhận",
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "StatusOrder",
+        required: true,
+        default: "69df57a6448634bd45602725"
     },
     id_delivery_method: {
         type: mongoose.Schema.Types.ObjectId,

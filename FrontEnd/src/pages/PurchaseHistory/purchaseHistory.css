@@ -1,0 +1,71 @@
+/* CSS cho badge trạng thái */
+.status-badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    margin-left: 5px;
+    display: inline-block;
+    min-width: 100px;
+    text-align: center;
+}
+
+/* Màu sắc cho từng trạng thái */
+.status-5 { background-color: #fff3cd; color: #856404; } /* Chờ xác nhận */
+.status-6 { background-color: #cce5ff; color: #004085; } /* Đã xác nhận */
+.status-7 { background-color: #d1ecf1; color: #0c5460; } /* Đang vận chuyển */
+.status-8 { background-color: #d4edda; color: #155724; } /* Đã hủy */
+.status-9 { background-color: #f8d7da; color: #721c24; } /* Hoàn thành */
+/*.status-6 { background-color: #e2e3e5; color: #383d41; } !* Đã xác nhận (dự phòng) *!*/
+.status-default { background-color: #f8f9fa; color: #6c757d; } /* Trạng thái khác */
+
+/* CSS cho filter trạng thái */
+.status__list {
+    cursor: pointer;
+    /*margin-right: 10px;*/
+    padding: 15px 10px;
+    border: none;
+    background: none;
+    transition: all 0.3s ease;
+}
+
+.status__list:hover {
+    color: #007bff;
+}
+
+.status__list--click {
+    font-weight: bold;
+    border-bottom: 2px solid #007bff;
+    color: #007bff;
+}
+.btn__review{
+    margin: auto !important;
+    background: bisque;
+    padding: 15px 15px !important;
+    color: #a87a09;
+}
+.info__detali{
+    width: 500px;
+    text-align: left;
+}
+.info__detali__name{
+    max-width: 500px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn__cancel-order {
+    color: white;
+    background: #e53935;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.btn__cancel-order:hover {
+    background: deeppink;
+}
