@@ -85,3 +85,85 @@ export async function resetPasswordService(username, email) {
     await user.save();
     await sendResetPasswordEmail(email, username,passwordReset);
 }
+
+export async function getRegularUsersService() {
+    return User.find({ role: "USER" }).select("-password").sort({ createdAt: -1 }).lean();
+}
+
+export async function getRegularUserMonthlyStatsService() {
+    const stats = await User.aggregate([
+        { $match: { role: "USER" } },
+        {
+            $group: {
+                _id: {
+                    year: { $year: "$createdAt" },
+                    month: { $month: "$createdAt" }
+                },
+                count: { $sum: 1 }
+            }
+        },
+        { $sort: { "_id.year": 1, "_id.month": 1 } }
+    ]);
+
+    return stats.reduce((result, item) => {
+        const month = String(item._id.month).padStart(2, "0");
+        result[`${item._id.year}-${month}`] = item.count;
+        return result;
+    }, {});
+}
+
+export async function checkUserExistsService({ username, email }) {
+    const [usernameUser, emailUser] = await Promise.all([
+        username ? User.findOne({ username }).select("_id").lean() : null,
+        email ? User.findOne({ email }).select("_id").lean() : null
+    ]);
+
+    return {
+        usernameExists: Boolean(usernameUser),
+        emailExists: Boolean(emailUser)
+    };
+}
+
+export async function createUserByAdminService(data) {
+    const { username, email, password, fullname, phone, address } = data;
+    if (!username || !email || !password || !fullname || !phone) {
+        throw new ApiError(400, "Vui long nhap day du thong tin user");
+    }
+
+    await validatePasswordService(password);
+
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+        throw new ApiError(400, "Email hoac Username da ton tai!");
+    }
+
+    const hashPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({
+        username,
+        email,
+        password: hashPassword,
+        fullname,
+        phone,
+        address: address || "N/A",
+        role: "USER",
+        status: "ACTIVE"
+    });
+
+    return User.findById(user._id).select("-password").lean();
+}
+
+export async function getPendingCollaboratorsService() {
+    return User.find({ role: "JEWELER", status: "PENDING" }).select("-password").sort({ createdAt: -1 }).lean();
+}
+
+export async function confirmCollaboratorService(userId, isConfirmed) {
+    const update = isConfirmed
+        ? { role: "JEWELER", status: "ACTIVE" }
+        : { status: "BLOCK" };
+
+    const user = await User.findByIdAndUpdate(userId, update, { new: true }).select("-password").lean();
+    if (!user) {
+        throw new ApiError(404, "Khong tim thay user");
+    }
+    return user;
+}

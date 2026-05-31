@@ -2,8 +2,8 @@ import "./home.css";
 import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import ProductCard from "../../components/ProductCard";
 import {useContext, useEffect, useState} from "react";
-import axios from "axios";
 import {CategoryContext} from "../../context/CategoryContext";
+import {api} from "../../utils/api";
 
 export default function Home() {
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ export default function Home() {
     const {categoryMap} = useContext(CategoryContext);
 
     useEffect(() => {
-        axios.get("http://localhost:5000/products/tag", {
+        api.get("/products/tag", {
             params: {tag: "HOT"}
         })
             .then(response => {
@@ -26,7 +26,7 @@ export default function Home() {
             });
 
         // Fetch new products
-        axios.get("http://localhost:5000/products/tag", {
+        api.get("/products/tag", {
             params: {tag: "NEW"}
         })
             .then(response => {

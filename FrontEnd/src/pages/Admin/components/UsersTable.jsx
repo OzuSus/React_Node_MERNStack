@@ -3,10 +3,10 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   TableFooter, Avatar, Pagination, Box, Button, Typography
 } from "@mui/material";
-import axios from "axios";
 import AddUserModal from "../model/AddUserModal";
+import {api, getAssetUrl} from "../../../utils/api";
 
-const UsersTable = ({ resultsPerPage = 10 },onUserChange) => {
+const UsersTable = ({ resultsPerPage = 10, onUserChange }) => {
   const [page, setPage] = useState(1);
   const [users, setUsers] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
@@ -14,9 +14,10 @@ const UsersTable = ({ resultsPerPage = 10 },onUserChange) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/users/regular");
-      setUsers(response.data);
-      setTotalUsers(response.data.length);
+      const response = await api.get("/users/regular");
+      const data = Array.isArray(response.data) ? response.data : response.data.users || [];
+      setUsers(data.map(user => ({...user, id: user.id || user._id})));
+      setTotalUsers(data.length);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -90,7 +91,7 @@ const UsersTable = ({ resultsPerPage = 10 },onUserChange) => {
                         <TableCell sx={tableCellStyle}>
                           <Avatar
 
-                               src={user?.avatar && user.avatar !== "null" ?"http://localhost:8080/uploads/"+ user.avatar : "/assets/userDefautAvatar.jpg"}
+                               src={getAssetUrl(user?.avatar, "/assets/userDefautAvatar.jpg")}
                                alt="Avatar"
                           />
                         </TableCell>

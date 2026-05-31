@@ -1,15 +1,20 @@
 import {createContext, useContext, useState, useEffect} from "react";
-import axios from "axios";
-import {UserContext} from "./UserContext";
-import {useParams} from "react-router-dom";
 import {showConfirmDialog, showErrorDialog, showSuccessDialog} from "../utils/Alert";
+import {api} from "../utils/api";
 
 export const AdminProductsContext = createContext();
 
 export const useAdminProduct = () => useContext(AdminProductsContext);
 
+const normalizeProduct = (product) => ({
+    ...product,
+    id: product.id || product._id,
+    categoryID: product.categoryID || product.id_category?._id || product.id_category,
+    price: Number(product.price || 0),
+    quantity: Number(product.quantity || 0),
+});
+
 export const AdminProductsProvider = ({children}) => {
-    const {user} = useContext(UserContext);
     const [loading, setLoading] = useState(true);
     const [products, setAllProducts] = useState([]);
     const [error, setError] = useState('');
@@ -21,8 +26,9 @@ export const AdminProductsProvider = ({children}) => {
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const productResponse = await axios.get("http://localhost:8080/api/products");
-            setAllProducts(productResponse.data);
+            const productResponse = await api.get("/products", {params: {limit: 1000}});
+            const data = productResponse.data.product || productResponse.data.products || productResponse.data;
+            setAllProducts(Array.isArray(data) ? data.map(normalizeProduct) : []);
             setError("");
         } catch (err) {
             setLoading(false);
@@ -38,17 +44,16 @@ export const AdminProductsProvider = ({children}) => {
         if (confirmDelete.isConfirmed) {
             try {
                 setLoading(true)
-                await axios.delete("http://localhost:8080/api/products/deleteProduct", {
-                    params: {idProduct: id}
-                });
+                await api.delete(`/products/${id}`);
                 setLoading(false);
                 await setError("");
                 await showSuccessDialog("Thành công", "Đã xóa sản phẩm.");
                 await fetchProducts();
             } catch (err) {
                 console.error("Error deleting product:", err);
-                await setError(err.response?.data?.message || "Không thể xóa sản phẩm.");
-                await showErrorDialog("Lỗi", error || "Không thể xóa sản phẩm.");
+                const message = err.response?.data?.message || "Không thể xóa sản phẩm.";
+                await setError(message);
+                await showErrorDialog("Lỗi", message);
             }
         }else {
             // Người dùng đã huỷ => không làm gì cả
@@ -59,7 +64,7 @@ export const AdminProductsProvider = ({children}) => {
 
     const handleUploadFile = async (filename) => {
         try {
-            const response = await axios.get(`http://localhost:8080/uploads/${encodeURIComponent(filename)}`);
+            const response = await api.get(`/uploads/${encodeURIComponent(filename)}`);
             return response.data;
         } catch (error) {
             console.error("Error uploading file:", error);
@@ -73,14 +78,14 @@ export const AdminProductsProvider = ({children}) => {
             const formData = new FormData();
             formData.append("name", name);
             formData.append("quantity", quantity);
-            formData.append("prize", prize);
+            formData.append("price", prize);
             formData.append("description", description);
             formData.append("id_category", id_category);
             if (image) {
                 formData.append("image", image);
             }
 
-            await axios.put(`http://localhost:8080/api/products/editProduct/${id}`, formData, {
+            await api.put(`/products/${id}`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
@@ -92,8 +97,9 @@ export const AdminProductsProvider = ({children}) => {
         } catch (err) {
             setLoading(false);
             console.error("Error updating product:", err);
-            setError(err.response?.data?.message || "Không thể cập nhật thông tin.");
-            await showErrorDialog("Lỗi", setError || "Không thể cập nhật thông tin.");
+            const message = err.response?.data?.message || "Không thể cập nhật thông tin.";
+            setError(message);
+            await showErrorDialog("Lỗi", message);
         }
     }
 
@@ -103,12 +109,12 @@ export const AdminProductsProvider = ({children}) => {
             const formData = new FormData();
             formData.append("name", name);
             formData.append("quantity", quantity);
-            formData.append("prize", prize);
+            formData.append("price", prize);
             formData.append("description", description);
             formData.append("id_category", id_category);
             formData.append("image", image);
 
-            await axios.post("http://localhost:8080/api/products/createProduct", formData, {
+            await api.post("/products", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
@@ -120,8 +126,9 @@ export const AdminProductsProvider = ({children}) => {
         } catch (err) {
             setLoading(false);
             console.error("Error adding product:", err);
-            setError(err.response?.data?.message || "Không thể đổi thông tin.");
-            await showErrorDialog("Lỗi", setError || "Không thể đổi thông tin.");
+            const message = err.response?.data?.message || "Không thể đổi thông tin.";
+            setError(message);
+            await showErrorDialog("Lỗi", message);
         }finally {
             setLoading(false);
         }

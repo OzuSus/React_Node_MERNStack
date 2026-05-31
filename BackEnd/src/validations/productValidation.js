@@ -53,10 +53,15 @@ export const productSchema = Joi.object({
     id_jeweler: Joi.string()
         .hex()
         .length(24)
-        .required()
+        .optional()
         .messages({
             "string.empty": "Thong tin tho kim hoan khong duoc de trong",
             "string.hex": "Thong tin tho kim hoan phai la ma ObjectId hop le (hex)",
             "string.length": "Thong tin tho kim hoan phai co do dai 24 ky tu",
         }),
 });
+
+export const productUpdateSchema = productSchema.fork(
+    ["name", "price", "description", "image", "quantity", "id_category"],
+    (schema) => schema.optional()
+);

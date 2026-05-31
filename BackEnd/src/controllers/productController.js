@@ -1,8 +1,10 @@
 import {
     createNewProductService,
+    deleteProductService,
     getAllProductService,
     getFilteredProductsService, getProductByCategoryService, getProductByIdService,
-    getProductByTagService
+    getProductByTagService,
+    updateProductService
 } from "../services/productService.js";
 
 export async function getAllProduct(req,res,next) {
@@ -44,9 +46,28 @@ export async function getProductByCategory(req,res,next) {
 
 export async function createNewProduct(req,res,next) {
     try {
-        const productData = req.body;
+        const productData = buildProductPayload(req);
         const newProduct = await createNewProductService(productData);
         return res.status(200).json({message: "Tao San pham moi thanh cong", product: newProduct})
+    }catch (err){
+        next(err)
+    }
+}
+
+export async function updateProduct(req,res,next) {
+    try {
+        const productData = buildProductPayload(req, false);
+        const product = await updateProductService(req.params.id, productData);
+        return res.status(200).json({message: "Cap nhat san pham thanh cong", product})
+    }catch (err){
+        next(err)
+    }
+}
+
+export async function deleteProduct(req,res,next) {
+    try {
+        const product = await deleteProductService(req.params.id);
+        return res.status(200).json({message: "Xoa san pham thanh cong", product})
     }catch (err){
         next(err)
     }
@@ -92,4 +113,23 @@ export async function getFilteredProducts(req, res, next) {
     } catch (err) {
         next(err);
     }
+}
+
+function buildProductPayload(req, includeOwner = true) {
+    const payload = {...req.body};
+
+    if (payload.prize && !payload.price) {
+        payload.price = payload.prize;
+    }
+    delete payload.prize;
+
+    if (req.file?.path) {
+        payload.image = req.file.path;
+    }
+
+    if (includeOwner && !payload.id_jeweler) {
+        payload.id_jeweler = req.user.id;
+    }
+
+    return payload;
 }

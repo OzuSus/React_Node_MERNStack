@@ -16,6 +16,7 @@ import AddProductForm from "../components/AddProductDialog";
 import EditProductForm from "../components/EditProductDialog";
 import {CategoryContext} from "../../../context/CategoryContext";
 import Loader from "../../../components/Loader";
+import {getAssetUrl} from "../../../utils/api";
 
 const ProductManagement = () => {
     const {loading, products, fetchProducts, handleDeleteProduct} = useAdminProduct();
@@ -36,9 +37,9 @@ const ProductManagement = () => {
     const filteredProducts =
         selectedCategory === "All"
             ? products
-            : products.filter((p) => p.categoryID.toString() === selectedCategory);
+            : products.filter((p) => p.categoryID?.toString() === selectedCategory);
 
-    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+    const totalPages = Math.max(1, Math.ceil(filteredProducts.length / productsPerPage));
 
     const paginatedProducts = filteredProducts.slice(
         (currentPage - 1) * productsPerPage,
@@ -137,11 +138,7 @@ const ProductManagement = () => {
                                 <TableCell>{p.id}</TableCell>
                                 <TableCell style={{display: 'flex', alignItems: 'center'}}>
                                     <img
-                                        src={
-                                            p.image.startsWith("https://")
-                                                ? p.image
-                                                : "http://localhost:8080/uploads/" + p.image
-                                        }
+                                        src={getAssetUrl(p.image)}
                                         alt="Product"
                                         style={{
                                             width: '150px',

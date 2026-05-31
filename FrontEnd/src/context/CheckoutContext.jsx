@@ -1,8 +1,8 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
-import axios from "axios";
 import Swal from "sweetalert2";
 import {showConfirmDialog, showErrorDialog, showSuccessDialog} from "../utils/Alert";
 import {useNavigate} from "react-router-dom";
+import {api} from "../utils/api";
 
 
 export const CheckoutContext = createContext();
@@ -15,7 +15,7 @@ export const CheckoutProvider = ({ children }) => {
 
     const fetchPaymentMethods = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/paymentMethods");
+            const response = await api.get("/paymentMethods");
             setPaymentMethods(response.data.paymentMethods);
         }catch (error) {
             console.error("Lỗi khi lấy phương thức thanh toán:", error);
@@ -27,7 +27,7 @@ export const CheckoutProvider = ({ children }) => {
     useEffect(() => {
         const fetchDeliveryMethods = async () => {
             try {
-                const response = await axios.get("http://localhost:5000/deliveryMethods");
+                const response = await api.get("/deliveryMethods");
                 setDeliveryMethods(response.data.deliveryMethods);
             } catch (error) {
                 console.error("Lỗi khi lấy phương thức giao hàng:", error);
@@ -44,10 +44,7 @@ export const CheckoutProvider = ({ children }) => {
     const handlePlaceOrder = async (payload) => {
         try {
 
-            const response = await axios.post("http://localhost:5000/orders/place", payload, {
-                withCredentials: true,
-
-            });
+            const response = await api.post("/orders/place", payload);
             if (response.status === 200) {
                 // await Swal.fire("Đặt hàng thành công", "Cảm ơn bạn đã mua hàng!", "success");
                 return true;
@@ -66,7 +63,7 @@ export const CheckoutProvider = ({ children }) => {
 
     const createVnpayPayment = async (amount, content) => {
         try {
-            const response = await axios.post("http://localhost:5000/vnpay/vnpay_return", {
+            const response = await api.post("/vnpay/vnpay_return", {
                 amount: amount,
                 content: content
             }, {

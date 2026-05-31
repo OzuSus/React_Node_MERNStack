@@ -2,7 +2,7 @@ import Product from "../models/Product.js";
 import {ApiError} from "../utils/ApiError.js";
 
 const MAX_PAGE = 1000;
-const MAX_LIMIT = 100;
+const MAX_LIMIT = 1000;
 export async function getAllProductService(page, limit) {
     const numericPage = Number(page) || 1;
     const numericLimit = Number(limit) || 10;
@@ -30,6 +30,25 @@ export async function getProductByCategoryService(categoryId) {
 export async function createNewProductService(productData) {
     const newProduct = await Product.create(productData);
     return newProduct;
+}
+
+export async function updateProductService(productId, productData) {
+    const product = await Product.findByIdAndUpdate(productId, productData, {
+        new: true,
+        runValidators: true
+    });
+    if (!product) {
+        throw new ApiError(404, "Ko tim thay san pham!");
+    }
+    return product;
+}
+
+export async function deleteProductService(productId) {
+    const product = await Product.findByIdAndDelete(productId);
+    if (!product) {
+        throw new ApiError(404, "Ko tim thay san pham!");
+    }
+    return product;
 }
 
 export async function getProductByTagService(tag) {

@@ -26,8 +26,8 @@ const Sidebar = () => {
         { text: "Orders", icon: <ShoppingCartIcon />, path: "/admin/orders" },
         { text: "Users", icon: <PeopleIcon />, path: "/admin/users" },
         { text: "Products", icon: <StorefrontIcon />, path: "/admin/products" },
-        // { text: "Categories", icon: <CategoryIcon />, path: "/admin/categories" },
-        // { text: "Pending Collaborators", icon: <GroupAddIcon />, path: "/admin/approve-ctv" },
+        { text: "Categories", icon: <CategoryIcon />, path: "/admin/categories" },
+        { text: "Pending Collaborators", icon: <GroupAddIcon />, path: "/admin/approve-ctv" },
     ];
 
     return (

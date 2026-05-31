@@ -15,7 +15,7 @@ import {
     Alert
 } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import axios from 'axios';
+import {api} from "../../../utils/api";
 
 const ApproveCTV = () => {
     const [pendingUsers, setPendingUsers] = useState([]);
@@ -27,7 +27,7 @@ const ApproveCTV = () => {
         const fetchPendingUsers = async () => {
             setLoading(true);
             try {
-                const res = await axios.get('http://localhost:8080/api/user/ctv-pending');
+                const res = await api.get('/users/ctv-pending');
                 setPendingUsers(res.data);
             } catch (err) {
                 setMessage('Lỗi khi tải danh sách CTV chờ duyệt.');
@@ -45,7 +45,7 @@ const ApproveCTV = () => {
     const handleConfirm = async (id, isConfirmed) => {
         setLoading(true);
         try {
-            const res = await axios.post(`http://localhost:8080/api/user/${id}/confirm-CTV?isConfirmed=${isConfirmed}`);
+            const res = await api.post(`/users/${id}/confirm-ctv`, null, {params: {isConfirmed}});
             setMessage(res.data.responseMessage);
             setPendingUsers(prev => prev.filter(user => user.id !== id));
             setExpandedId(null);

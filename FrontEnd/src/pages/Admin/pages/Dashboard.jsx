@@ -67,7 +67,7 @@ const Dashboard = () => {
     const indexOfLastOrder = currentPage * ordersPerPage;
     const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
     const currentOrders = completedOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-    const totalPages = Math.ceil(completedOrders.length / ordersPerPage);
+    const totalPages = Math.max(1, Math.ceil(completedOrders.length / ordersPerPage));
 
     const getStatusChip = (id, name) => {
         const statusMap = {

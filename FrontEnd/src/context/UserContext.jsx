@@ -1,16 +1,19 @@
-import { createContext, useState, useEffect } from "react";
-import Cookies from "js-cookie";
+import {createContext, useEffect, useState} from "react";
+import {api} from "../utils/api";
+
 export const UserContext = createContext();
 
-export const UserProvider = ({ children }) => {
+const normalizeUser = (user) => user ? ({
+    ...user,
+    id: user.id || user._id,
+    _id: user._id || user.id,
+}) : null;
+
+export const UserProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [userInfo, setUserInfo] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [allUser, setAllUser] = useState([])
-
-    useEffect(() => {
-        console.log("UserProvider mounted");
-    }, []);
+    const [allUser, setAllUser] = useState([]);
 
     useEffect(() => {
         fetchCurrentUser();
@@ -18,61 +21,57 @@ export const UserProvider = ({ children }) => {
 
     const fetchCurrentUser = async () => {
         try {
-            const res = await fetch("http://localhost:5000/auth/me", {
-                method: "GET",
-                credentials: "include" // send cookie
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setUser(data);
-                setUserInfo(data);
-            } else {
-                setUser(null);
-            }
+            const res = await api.get("/auth/me");
+            const data = normalizeUser(res.data);
+            setUser(data);
+            setUserInfo(data);
         } catch (err) {
             console.error("Error fetching current user:", err);
             setUser(null);
+            setUserInfo(null);
         } finally {
             setIsLoading(false);
         }
     };
 
     const login = (userData) => {
-        setUser(userData);
-        setUserInfo(userData);
+        const data = normalizeUser(userData);
+        setUser(data);
+        setUserInfo(data);
     };
 
     const logout = async () => {
         try {
-            await fetch("http://localhost:5000/auth/logout", {
-                method: "POST",
-                credentials: "include"
-            });
+            await api.post("/auth/logout");
         } catch (err) {
             console.error("Logout error:", err);
         }
-        // localStorage.removeItem("user");
         setUser(null);
         setUserInfo(null);
     };
 
     const fetchUserDetail = async (userId) => {
         try {
-            const res = await fetch(`http://localhost:5000/users?id=${userId}`, {
-                method: "GET",
-                credentials: "include"
-            });
-            if (!res.ok) throw new Error("Không thể lấy thông tin chi tiết người dùng.");
-            const data = await res.json();
-            setUserInfo(data);
+            const res = await api.get("/users", {params: {id: userId}});
+            setUserInfo(normalizeUser(res.data));
         } catch (error) {
-            console.error("Lỗi fetch user detail:", error);
+            console.error("Loi fetch user detail:", error);
         }
     };
 
+    const getAllUser = async () => {
+        try {
+            const res = await api.get("/users/regular");
+            const users = Array.isArray(res.data) ? res.data : res.data.users || [];
+            setAllUser(users.map(normalizeUser));
+        } catch (error) {
+            console.error("Loi fetch all users:", error);
+            setAllUser([]);
+        }
+    };
 
     return (
-        <UserContext.Provider value={{ user, userInfo, login, logout, isLoading, fetchUserDetail, allUser}}>
+        <UserContext.Provider value={{user, userInfo, login, logout, isLoading, fetchUserDetail, allUser, getAllUser}}>
             {children}
         </UserContext.Provider>
     );

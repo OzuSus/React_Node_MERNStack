@@ -9,7 +9,11 @@ const CategorySchema = mongoose.Schema({
         image: {
             type: String,
             required: true,
-            maxLength: 50,
+        },
+        status: {
+            type: String,
+            enum: ["ACTIVE", "INACTIVE"],
+            default: "ACTIVE",
         },
     }, {timestamps: true}
 )
