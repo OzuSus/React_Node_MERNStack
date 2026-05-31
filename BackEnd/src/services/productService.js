@@ -2,7 +2,7 @@ import Product from "../models/Product.js";
 import {ApiError} from "../utils/ApiError.js";
 
 const MAX_PAGE = 1000;
-const MAX_LIMIT = 1000;
+const MAX_LIMIT = 100;
 export async function getAllProductService(page, limit) {
     const numericPage = Number(page) || 1;
     const numericLimit = Number(limit) || 10;
