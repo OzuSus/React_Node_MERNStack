@@ -17,10 +17,19 @@
   min-height: 100vh;
 }
 
-section {
+/*
+  IMPORTANT:
+  - Admin UI uses MUI (Select/Menu/Dialog) which renders lists and buttons internally.
+  - Global element selectors like `li`, `a`, `button` were overriding Admin styles and could break
+    dropdowns/menus in Orders, UpdateStatusModal, Add/Edit product forms.
+  - We scope most "shop/user" global styles to `.mainApp` so Admin (outside `.mainApp`) is not affected.
+*/
+
+.mainApp section {
   text-align: center;
   margin-bottom: 5%;
 }
+
 .mainApp{
   margin-bottom: 50px;
   display: flex;
@@ -29,7 +38,7 @@ section {
   margin-top:93px;
 }
 
-.headerContainer {
+.mainApp .headerContainer {
   background-color: mistyrose;
   display: flex;
   justify-content: space-around;
@@ -43,7 +52,7 @@ section {
   z-index: 50;
 }
 
-.logoContatiner {
+.mainApp .logoContatiner {
   text-align: left;
   font-size: 1em;
   line-height: 10px;
@@ -51,13 +60,13 @@ section {
   cursor:pointer;
 }
 
-.logoContatiner h2 {
+.mainApp .logoContatiner h2 {
   font-family: 'Cinzel Decorative', cursive;
   font-size: 1.1em;
   margin-bottom: 10px;
 }
 
-.overlay {
+.mainApp .overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -72,18 +81,18 @@ section {
   /* Ensures the overlay is on top of other elements */
 }
 
-.categories {
+.mainApp .categories {
   display: none;
 }
 
-.headerLeft {
+.mainApp .headerLeft {
   display: flex;
   padding-right: 5px;
   gap: 4px;
   align-items: center;
 }
 
-.logoContatiner p {
+.mainApp .logoContatiner p {
   font-family: abel, sans-serif;
   color: grey;
   line-height: 0px;
@@ -92,16 +101,16 @@ section {
   margin-top: 0;
 }
 
-.menuBar,
-.expandMenu {
+.mainApp .menuBar,
+.mainApp .expandMenu {
   cursor: pointer;
   padding: 0px;
   width: 25px;
 }
 
-.bar1,
-.bar2,
-.bar3 {
+.mainApp .bar1,
+.mainApp .bar2,
+.mainApp .bar3 {
   width: 25px;
   background: var(--primary-text-color);
   height: 2px;
@@ -110,46 +119,47 @@ section {
   border-radius: 1px;
 }
 
-.expandMenu .bar1 {
+.mainApp .expandMenu .bar1 {
   transform: translate(0, 2px) rotate(-45deg);
 }
 
-.expandMenu .bar3 {
+.mainApp .expandMenu .bar3 {
   transform: translate(0, -10px) rotate(45deg);
 }
 
-.expandMenu .bar2 {
+.mainApp .expandMenu .bar2 {
   opacity: 0;
 }
 
-.sideNav {
+.mainApp .sideNav {
   width: 100%;
   font-family: abel, sans-serif;
   text-align: center;
   margin-top: 75px;
 }
 
-li {
+/* was: li { ... } */
+.mainApp li {
   list-style: none;
   font-family: abel;
   text-transform: capitalize;
 }
 
-.sideNav ul {
+.mainApp .sideNav ul {
   padding-left: 0;
   text-align: center;
 }
 
-.sideNav li {
+.mainApp .sideNav li {
   padding: 0.4em;
   border-bottom: 1px dashed;
 }
 
-.sideNav li:hover {
+.mainApp .sideNav li:hover {
   color: #a86e3b;
 }
 
-.sideNav li select {
+.mainApp .sideNav li select {
   border: none;
   background: var(--primary-theme-color);
   font-family: abel;
@@ -158,17 +168,17 @@ li {
   cursor: pointer;
 }
 
-.sideNav li select option {
+.mainApp .sideNav li select option {
   text-align: center;
   margin: auto;
 }
 
-.stikeThrough {
+.mainApp .stikeThrough {
   text-decoration: line-through;
   color: grey;
 }
 
-.ProductCard {
+.mainApp .ProductCard {
   padding: 5px;
   position: relative;
   box-shadow: 0 3px 4px rgba(128, 128, 128, 0.592);
@@ -183,35 +193,35 @@ li {
   border-radius: 5px;
 }
 
-.ProductCard a {
+.mainApp .ProductCard a {
   width: 100%;
 }
-.ProductCard a div{
+.mainApp .ProductCard a div{
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
 }
-.ProductCard img {
+.mainApp .ProductCard img {
   width: 100%;
   height: 250px;
   object-fit: cover;
   border-radius: 4px;
 }
-.ProductCard:hover{
+.mainApp .ProductCard:hover{
 
   transition: all 1s ease-in-out;
   box-shadow: 0px 4px 8px rgba(80, 62, 62, 0.622);
   outline: 1px solid #5f3926;
   background-color:var(--primary-theme-color);
 }
-.ProductCard .cardTextContent {
+.mainApp .ProductCard .cardTextContent {
   font-family: sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
-.cardTextContent .price {
+.mainApp .cardTextContent .price {
   padding-top: 20px;
   font-family: sans-serif;
   font-size: 25px;
@@ -221,16 +231,16 @@ li {
   align-items: center;
   flex-wrap: wrap;
 }
-.cardTextContent .rating{
+.mainApp .cardTextContent .rating{
   display: flex;
   flex-direction: row;
 }
-.trendingIcon {
+.mainApp .trendingIcon {
   display: flex;
   left: -50%;
   background: var(--primary-theme-color);
 }
-.addToCartButton {
+.mainApp .addToCartButton {
   position: absolute;
   top: 0;
   right: 0;
@@ -242,19 +252,19 @@ li {
   padding: 5px;
 }
 
-.trendingIcon svg {
+.mainApp .trendingIcon svg {
   left: 0;
 }
 
-.ribbon {
+.mainApp .ribbon {
   width: 100px;
   height: 100px;
   overflow: hidden;
   position: absolute;
 }
 
-.ribbon::before,
-.ribbon::after {
+.mainApp .ribbon::before,
+.mainApp .ribbon::after {
   position: absolute;
   z-index: -1;
   content: "";
@@ -262,7 +272,7 @@ li {
   border: 5px solid rgb(144, 96, 96);
 }
 
-.ribbon span {
+.mainApp .ribbon span {
   position: absolute;
   display: block;
   width: 220px;
@@ -276,64 +286,66 @@ li {
   text-align: center;
 }
 
-.ribbon-top-left {
+.mainApp .ribbon-top-left {
   top: -10px;
   left: -10px;
 }
 
-.ribbon-top-left::before,
-.ribbon-top-left::after {
+.mainApp .ribbon-top-left::before,
+.mainApp .ribbon-top-left::after {
   border-top-color: transparent;
   border-left-color: transparent;
 }
 
-.ribbon-top-left::before {
+.mainApp .ribbon-top-left::before {
   top: 0;
   right: 0;
 }
 
-.ribbon-top-left::after {
+.mainApp .ribbon-top-left::after {
   bottom: 0;
   left: 0;
 }
 
-.ribbon-top-left span {
+.mainApp .ribbon-top-left span {
   right: -46px;
   top: 10px;
   transform: rotate(-45deg);
 }
-.favorite {
+.mainApp .favorite {
   position: absolute;
   top: 222px;
   right: 13px;
 }
-.favorite svg {
+.mainApp .favorite svg {
   color:var(--primary-text-color);
 }
-.favorite svg[data-testid="FavoriteTwoToneIcon"] {
+.mainApp .favorite svg[data-testid="FavoriteTwoToneIcon"] {
   color: var(--primary-text-color);
 }
-.cardTextContent h3 {
+.mainApp .cardTextContent h3 {
   margin-bottom: 0;
 }
 
-.navbarIcons {
+.mainApp .navbarIcons {
   display: flex;
   flex-direction: row;
   gap: 9px;
 }
 
-a {
+/* was: a { ... } */
+.mainApp a {
   text-decoration: none;
   color: var(--primary-text-color);
 }
 
-.socialMedia {
+.mainApp .socialMedia {
   display: flex;
   justify-content: space-evenly;
 }
 
-button {
+/* was: button { ... } */
+.mainApp button {
   margin: auto;
   cursor: pointer;
   border: 1px solid;
@@ -349,11 +361,11 @@ button {
   );
   font-size:0.9rem
 }
-button:hover {
+.mainApp button:hover {
   background: linear-gradient(white, var(--primary-theme-color));
 }
 
-footer {
+.mainApp footer {
   text-align: center;
   z-index: 1201;
   width: 100%;
@@ -362,25 +374,25 @@ footer {
 
   background: linear-gradient(rgba(255, 255, 255, 0.644), pink, var(--primary-text-color));
 }
-.made{
+.mainApp .made{
   margin-bottom: 0;
 }
 
-.socialMedia {
+.mainApp .socialMedia {
   max-width: 350px;
   margin: auto;
 }
 
-footer p {
+.mainApp footer p {
   color: white;
   font: 0.7em abel;
 }
 
-footer h6 {
+.mainApp footer h6 {
   margin: 0;
 }
 
-.navbarIcons li {
+.mainApp .navbarIcons li {
   display: none;
 }
 
@@ -405,13 +417,13 @@ footer h6 {
   background: var(--primary-text-color);
 }
 
-.inputElement input {
+.mainApp .inputElement input {
   width: 80%;
   font-size: 1.2rem;
   height: 2rem;
 }
 
-.inputElement svg {
+.mainApp .inputElement svg {
   height: 2rem;
   border: 2px solid;
   border-radius: 5px;
@@ -420,7 +432,7 @@ footer h6 {
   background-color: var(--primary-theme-color);
 }
 
-.inputElement .closeSearch svg {
+.mainApp .inputElement .closeSearch svg {
   background-color: transparent;
   position: absolute;
   top: 100px;
@@ -986,141 +998,15 @@ CSS Loader
 }
 
 @media (min-width: 400px) {
-  .headerContainer {
+  .mainApp .headerContainer {
     justify-content: space-between;
   }
-  .NavItem:hover{
+  .mainApp .NavItem:hover{
     /*text-decoration:  overline var(--primary-theme-color);*/
     color: #f56c6c;
 
   }
-  .headerContainer .active{
+  .mainApp .headerContainer .active{
     /*text-decoration:  overline var(--primary-theme-color);*/
   }
-  .navbarIcons li {
-    display: flex;
-  }
-
-  .logoContatiner {
-    text-align: left;
-    font-size: 1.2em;
-    line-height: 16px;
-    text-align: center;
-  }
-
-  .categories {
-    display: flex;
-    flex-direction: row;
-    gap: 30px;
-    padding: 20px;
-    font-weight: 600;
-    font-family: abel;
-    font-size: 1.1em;
-    cursor: pointer;
-  }
-
-  .menuBar,
-  .expandMenu {
-    display: none;
-  }
-
-  .navbarIcons {
-    gap: 30px;
-    margin-right: 20px;
-  }
-
-  .navbarIcons svg {
-    font-size: 1.5rem;
-  }
-
-  .navbarIcons li {
-    font-size: 1.1em;
-    font-weight: 600;
-  }
-
-  .productsContainer {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .ProductCard {
-    width: 95%;
-  }
-
-  .inputElement input {
-    padding: 0.15rem;
-    border-radius: 5px;
-    border: none;
-    max-width: 500px;
-    font-family: abel;
-  }
-}
-.btn_login{
-  background: none;
-  background-color: #fff8f8;
-  color: #f56c6c;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  border: 1px solid #f56c6c;
-  transition: background-color 0.3s ease;
-}
-.btn_login:hover{
-  background: none;
-  background-color: #f56c6c;
-  color: white;
-}
-.profileWrapper {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-}
-
-.profileDropdown {
-  font-family: SansSerif;
-  display: none;
-  position: absolute;
-  top: 70px;
-  right: 0;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  z-index: 100;
-  width: 150px;
-}
-
-.profileWrapper:hover .profileDropdown {
-  display: block;
-}
-
-.profileItem {
-  padding: 10px;
-  text-align: center;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.profileItem:hover {
-  background-color: #f0f0f0;
-}
-.logout{
-  cursor: pointer;
-}
-.logout:hover{
-  color: #f56c6c;
-}
-.profile:hover, .emptyCart:hover, .wishList:hover{
-  color: #f56c6c;
-}
-.name__product{
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .mainApp .navbarIcons li {
