@@ -5,10 +5,10 @@ import PersonIcon from "@mui/icons-material/Person";
 import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled';
 import PlaceIcon from '@mui/icons-material/Place';
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import axios from "axios";
 import { showSuccessDialog, showErrorDialog } from "../../../utils/Alert";
 import Loader from "../../../components/Loader";
 import './AddUserModal.css';
+import {api} from "../../../utils/api";
 
 const AddUserModal = ({ open, onClose, onUserAdded }) => {
     const [formData, setFormData] = useState({
@@ -57,7 +57,7 @@ const AddUserModal = ({ open, onClose, onUserAdded }) => {
         const checkUsernameEmail = async () => {
             if (formData.username.trim() || formData.email.trim()) {
                 try {
-                    const res = await axios.get("http://localhost:8080/api/users/check-user", {
+                    const res = await api.get("/users/check-user", {
                         params: {
                             username: formData.username,
                             email: formData.email
@@ -82,7 +82,7 @@ const AddUserModal = ({ open, onClose, onUserAdded }) => {
         const validatePassword = async () => {
             if (formData.password.trim()) {
                 try {
-                    const res = await axios.post("http://localhost:8080/api/users/validate-password", {
+                    const res = await api.post("/users/validate-password", {
                         password: formData.password
                     });
                     if (res.data.valid) {
@@ -92,7 +92,7 @@ const AddUserModal = ({ open, onClose, onUserAdded }) => {
                     }
                 } catch (err) {
                     if (err.response?.status === 400) {
-                        const list = err.response.data.errors;
+                        const list = err.response.data.errors || [err.response.data.message || "Password không hợp lệ"];
                         setPasswordErrors(list);
                         setCurrentPasswordErrorIndex(0);
                         setErrors(prev => ({ ...prev, password: list[0] }));
@@ -178,7 +178,7 @@ const AddUserModal = ({ open, onClose, onUserAdded }) => {
 
         try {
 
-            const res = await axios.post("http://localhost:8080/api/users/register", formData);
+            const res = await api.post("/users/register", formData);
             setLoading(false);
             onClose();
             await showSuccessDialog("Thêm thành công!", "Người dùng mới đã được tạo.");

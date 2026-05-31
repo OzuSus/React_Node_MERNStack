@@ -1,124 +1,125 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-  Button,
-  Box,
-  IconButton,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    IconButton,
+    TextField,
 } from "@mui/material";
-import { Cancel } from "@mui/icons-material";
-import categoryApi from "../../backend/db/categoryApi"; // Đảm bảo đúng đường dẫn đến file categoryApi.js
-import { toast } from "react-toastify";
+import {Cancel} from "@mui/icons-material";
+import {api} from "../../../utils/api";
+import {showErrorDialog, showSuccessDialog} from "../../../utils/Alert";
 
-const AddCategoryModal = ({ open, onClose, onAddCategory }) => {
-  const [name, setName] = useState("");
-  const [thumbnail, setThumbnail] = useState(null);
-  const [imagePreview, setImagePreview] = useState("");
-  const [status, setStatus] = useState("ACTIVE"); // mặc định ACTIVE
+const AddCategoryModal = ({open, onClose, onAddCategory}) => {
+    const [name, setName] = useState("");
+    const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState("");
+    const [loading, setLoading] = useState(false);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setThumbnail(file); // ✅ Đúng: lưu object file
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
+    const resetForm = () => {
+        setName("");
+        setImage(null);
+        setImagePreview("");
+    };
 
-  const handleRemoveImage = () => {
-    setThumbnail(null);
-    setImagePreview("");
-  };
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImage(file);
+            setImagePreview(URL.createObjectURL(file));
+        }
+    };
 
-  const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("thumbnail", thumbnail);
-    formData.append("status", status);
+    const handleRemoveImage = () => {
+        setImage(null);
+        setImagePreview("");
+    };
 
-    try {
-      const response = await categoryApi.addCategory(formData);
-      if (response.data?.success) {
-        toast.success("Thêm danh mục thành công!");
-        onAddCategory(); // Gọi callback để refetch
-        onClose(); // Đóng modal
-      } else {
-        toast.error("Thêm danh mục thất bại!");
-      }
-    } catch (error) {
-      console.error("Lỗi khi thêm danh mục:", error);
-    }
-  };
+    const handleClose = () => {
+        resetForm();
+        onClose();
+    };
 
-  return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Thêm danh mục</DialogTitle>
-      <DialogContent>
-        <TextField
-          label="Tên danh mục"
-          fullWidth
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          sx={{ mb: 2 }}
-        />
+    const handleSubmit = async () => {
+        if (!name.trim() || !image) {
+            await showErrorDialog("Loi", "Vui long nhap ten va chon anh danh muc.");
+            return;
+        }
 
-        {imagePreview ? (
-          <Box sx={{ position: "relative", mb: 2 }}>
-            <img
-              src={imagePreview}
-              alt="preview"
-              style={{ width: "25%", borderRadius: 8 }}
-            />
-            <IconButton
-              onClick={handleRemoveImage}
-              sx={{
-                position: "absolute",
-                top: 8,
-                right: 8,
-                backgroundColor: "white",
-              }}
-            >
-              <Cancel color="error" />
-            </IconButton>
-          </Box>
-        ) : (
-          <Button variant="contained" component="label" sx={{ mb: 2 }}>
-            Chọn ảnh
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={handleImageChange}
-            />
-          </Button>
-        )}
+        const formData = new FormData();
+        formData.append("name", name.trim());
+        formData.append("image", image);
+        formData.append("status", "ACTIVE");
 
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel>Trạng thái</InputLabel>
-          <Select
-            value={status}
-            label="Trạng thái"
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <MenuItem value="ACTIVE">Đang hoạt động</MenuItem>
-            <MenuItem value="INACTIVE">Ngừng hoạt động</MenuItem>
-          </Select>
-        </FormControl>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Hủy</Button>
-        <Button onClick={handleSubmit} variant="contained">
-          Thêm
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+        try {
+            setLoading(true);
+            await api.post("/categories", formData, {
+                headers: {"Content-Type": "multipart/form-data"},
+            });
+            await showSuccessDialog("Thanh cong", "Da them danh muc.");
+            onAddCategory();
+            handleClose();
+        } catch (error) {
+            await showErrorDialog("Loi", error.response?.data?.message || "Them danh muc that bai.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <Dialog open={open} onClose={loading ? undefined : handleClose} fullWidth maxWidth="sm">
+            <DialogTitle>Them danh muc</DialogTitle>
+            <DialogContent>
+                <TextField
+                    label="Ten danh muc"
+                    fullWidth
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    sx={{mb: 2, mt: 1}}
+                />
+
+                {imagePreview ? (
+                    <Box sx={{position: "relative", mb: 2}}>
+                        <img
+                            src={imagePreview}
+                            alt="preview"
+                            style={{width: "25%", borderRadius: 8}}
+                        />
+                        <IconButton
+                            onClick={handleRemoveImage}
+                            sx={{
+                                position: "absolute",
+                                top: 8,
+                                right: 8,
+                                backgroundColor: "white",
+                            }}
+                        >
+                            <Cancel color="error"/>
+                        </IconButton>
+                    </Box>
+                ) : (
+                    <Button variant="contained" component="label" sx={{mb: 2}}>
+                        Chon anh
+                        <input
+                            type="file"
+                            accept="image/*"
+                            hidden
+                            onChange={handleImageChange}
+                        />
+                    </Button>
+                )}
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose} disabled={loading}>Huy</Button>
+                <Button onClick={handleSubmit} variant="contained" disabled={loading}>
+                    {loading ? "Dang them..." : "Them"}
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
 };
 
 export default AddCategoryModal;

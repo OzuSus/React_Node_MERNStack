@@ -6,7 +6,7 @@ import PageTitle from "../../../components/Typography/PageTitle";
 import ChartCard from "../../../components/Chart/ChartCard";
 import ChartLegend from "../../../components/Chart/ChartLegend";
 import UsersTable from "../components/UsersTable";
-import axios from "axios";
+import {api} from "../../../utils/api";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -34,7 +34,7 @@ const Customers = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const fetchGrowthData = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/users/regular/monthly-stats");
+      const response = await api.get("/users/regular/monthly-stats");
       const groupedByYear = {};
 
       Object.entries(response.data).forEach(([key, count]) => {

@@ -36,6 +36,8 @@ import Dashboard from "./pages/Admin/pages/Dashboard.jsx";
 import OrdersAdmin from "./pages/Admin/pages/Orders.jsx";
 import Customers from "./pages/Admin/pages/Customer.jsx";
 import ProductManagement from "./pages/Admin/pages/ProductManagement.jsx";
+import CategoryManagement from "./pages/Admin/pages/CategoryManagement.jsx";
+import ApproveCTV from "./pages/Admin/pages/ApproveCTV.jsx";
 
 
 // import Cart from "./pages/Cart/index.jsx";
@@ -80,6 +82,8 @@ function App() {
                                                         <Route path="orders" element={<OrdersAdmin/>}/>
                                                         <Route path="users" element={<Customers/>}/>
                                                         <Route path="products" element={<ProductManagement/>}/>
+                                                        <Route path="categories" element={<CategoryManagement/>}/>
+                                                        <Route path="approve-ctv" element={<ApproveCTV/>}/>
                                                     </Route>
                                                 </Routes>
                                             </div>

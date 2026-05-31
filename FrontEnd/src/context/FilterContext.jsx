@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
-import axios from "axios";
+import {api} from "../utils/api";
 
 export const FilterContext = createContext();
 
@@ -25,7 +25,7 @@ export const FilterProvider = ({children}) => {
 
     const fetchCategories = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/categories");
+            const response = await api.get("/categories");
             setCategories(response.data);
             setLoading(false);
             setError(false);
@@ -47,7 +47,7 @@ export const FilterProvider = ({children}) => {
                 params.minPrice = priceRange.min;
                 params.maxPrice = priceRange.max;
             }
-            const response = await axios.get("http://localhost:5000/products/filter", { params });
+            const response = await api.get("/products/filter", { params });
             const data = response.data;
             setAllProducts(data.product);
             setTotalPages(data.totalPages);

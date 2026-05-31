@@ -7,9 +7,9 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {useContext, useEffect, useState} from "react";
 import {NavLink, useNavigate} from "react-router-dom";
 import {UserContext} from "../../context/UserContext";
-import axios from "axios";
 import {showSuccessDialog} from "../../utils/Alert";
 import Loader from "../../components/Loader";
+import {api} from "../../utils/api";
 
 export default function ForgotPassword() {
     const [username, setUsername] = useState("");
@@ -30,7 +30,7 @@ export default function ForgotPassword() {
         setError("");
         try {
             setLoading(true);
-            await axios.post("http://localhost:5000/users/reset-password",
+            await api.post("/users/reset-password",
                 {},
                 {
                     params: {

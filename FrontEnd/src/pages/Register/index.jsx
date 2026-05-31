@@ -9,13 +9,13 @@ import PlaceIcon from '@mui/icons-material/Place';
 import {useContext, useEffect, useState} from "react";
 import {NavLink, useNavigate, Link} from "react-router-dom";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
-import axios from "axios";
 
 import Swal from "sweetalert2";
 import Loader from "../../components/Loader";
 import 'sweetalert2/dist/sweetalert2.min.css';
 import {showErrorDialog} from "../../utils/Alert.js";
 import {UserContext} from "../../context/UserContext.jsx";
+import {buildApiUrl} from "../../utils/api";
 export default function Register() {
     const {user} = useContext(UserContext);
     const navigate = useNavigate();
@@ -51,7 +51,7 @@ export default function Register() {
             if (!formData.password.trim()) return;
             try {
                 const res = await fetch(
-                    "http://localhost:5000/users/validate-password",
+                    buildApiUrl("/users/validate-password"),
                     {
                         method: "POST",
                         headers: {
@@ -124,7 +124,7 @@ export default function Register() {
         setLoading(true);
 
         try {
-            const res = await fetch("http://localhost:5000/auth/register", {
+            const res = await fetch(buildApiUrl("/auth/register"), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

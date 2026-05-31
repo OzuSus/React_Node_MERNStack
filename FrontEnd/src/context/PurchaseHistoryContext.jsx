@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { UserContext } from "./UserContext";
+import {api} from "../utils/api";
 
 export const PurchaseHistoryContext = createContext();
 
@@ -15,11 +15,12 @@ export const PurchaseHistoryProvider = ({ children }) => {
 
     const fetchAllStatuses = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/statusOrder",{
-                    withCredentials: true,
-            });
+            const response = await api.get("/statusOrder");
             if (response.data && response.data.statusOrders) {
-                setAllStatuses(response.data.statusOrders);
+                setAllStatuses(response.data.statusOrders.map(status => ({
+                    ...status,
+                    id: status.id || status._id,
+                })));
             }
         } catch (err) {
             console.error("Error fetching statuses", err);
@@ -32,9 +33,7 @@ export const PurchaseHistoryProvider = ({ children }) => {
     const fetchAllOrders = async (userId) => {
         // setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:5000/orders/${user._id}`,{
-                withCredentials: true,
-            });
+            const response = await api.get(`/orders/${user._id}`);
             setOrders(response.data.orders || []);
             setError(false);
         } catch (err) {
@@ -51,11 +50,7 @@ export const PurchaseHistoryProvider = ({ children }) => {
             if (statusId === null) {
                 await fetchAllOrders(userId);
             } else {
-                const response = await axios.get(
-                    `http://localhost:5000/orders/orderByStatus?status=${statusId}`,{
-                        withCredentials: true,
-                    }
-                );
+                const response = await api.get("/orders/orderByStatus", {params: {status: statusId}});
                 setOrders(response.data.orders);
             }
             setError(false);
@@ -74,11 +69,7 @@ export const PurchaseHistoryProvider = ({ children }) => {
 
     const cancelOrder = async (orderId) => {
         try {
-            await axios.put(
-                `http://localhost:5000/orders/cancel`,
-                { orderId },
-                { withCredentials: true }
-            );
+            await api.put("/orders/cancel", { orderId });
         } catch (err) {
             console.error("Error canceling order", err);
             throw err;

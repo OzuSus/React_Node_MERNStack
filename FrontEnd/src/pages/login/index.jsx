@@ -8,6 +8,7 @@ import {useContext, useEffect, useState} from "react";
 import {NavLink, useNavigate, Link} from "react-router-dom";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {UserContext} from "../../context/UserContext";
+import {buildApiUrl} from "../../utils/api";
 
 export default function Login() {
     const [username, setUsername] = useState("");
@@ -27,7 +28,7 @@ export default function Login() {
         e.preventDefault();
         setError("");
         try {
-            const response = await fetch("http://localhost:5000/auth/login", {
+            const response = await fetch(buildApiUrl("/auth/login"), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

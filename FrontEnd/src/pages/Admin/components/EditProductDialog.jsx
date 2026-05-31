@@ -19,6 +19,7 @@ import {useAdminProduct} from "../../../context/AdminProductsContext";
 import {CategoryContext} from "../../../context/CategoryContext";
 import "./AdminProductDialog.css";
 import Loader from "../../../components/Loader";
+import {getAssetUrl} from "../../../utils/api";
 
 const EditProductForm = ({open, onClose, product}) => {
     const {loading, handleEditProduct} = useAdminProduct();
@@ -44,9 +45,7 @@ const EditProductForm = ({open, onClose, product}) => {
             });
             setSelectedCategory(product.categoryID || '');
             setProductImage(null);
-            setPreviewImage(product.image.startsWith("https://")
-                ? product.image
-                : `http://localhost:8080/uploads/${product.image}`);
+            setPreviewImage(getAssetUrl(product.image));
         }
     }, [product]);
 

@@ -1,7 +1,6 @@
 import React, {createContext, useCallback, useContext, useState} from "react";
-import axios from "axios";
-import Swal from "sweetalert2";
 import {showConfirmDialog, showErrorDialog, showSuccessDialog} from "../utils/Alert";
+import {api, buildApiUrl} from "../utils/api";
 
 export const FavoriteContext = createContext();
 
@@ -12,7 +11,7 @@ export const FavoriteProvider = ({children}) => {
 
     const fetchFavoriteItems = useCallback(async (userId) => {
         try {
-            const response = await fetch("http://localhost:5000/favorite",{
+            const response = await fetch(buildApiUrl("/favorite"),{
                 method: "GET",
                 credentials: "include",
             });
@@ -20,7 +19,7 @@ export const FavoriteProvider = ({children}) => {
             setFavoriteItems(items);
 
             const categoryPromises = items.map(item =>
-                axios.get(`http://localhost:5000/categories/${item.id_product.id_category}`)
+                api.get(`/categories/${item.id_product.id_category}`)
             );
             const categoryResponses = await Promise.all(categoryPromises);
 
@@ -37,7 +36,7 @@ export const FavoriteProvider = ({children}) => {
 
     const isInWishList = async (userId, productId) => {
         try {
-            const response = await fetch("http://localhost:5000/favorite/isInWishLish", {
+            const response = await fetch(buildApiUrl("/favorite/isInWishLish"), {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -64,7 +63,7 @@ export const FavoriteProvider = ({children}) => {
         const result = await showConfirmDialog("Bạn có muốn thêm vào yêu thích?");
         if (result.isConfirmed) {
             try {
-                const response =  await fetch("http://localhost:5000/favorite/", {
+                const response =  await fetch(buildApiUrl("/favorite/"), {
                     method: "POST",
                     credentials: "include",
                     headers: {
@@ -92,7 +91,7 @@ export const FavoriteProvider = ({children}) => {
         const result = await showConfirmDialog("Bạn có chắc muốn xóa sản phẩm khỏi yêu thích?", "warning");
         if (result.isConfirmed) {
             try {
-                const response = await fetch("http://localhost:5000/favorite/", {
+                const response = await fetch(buildApiUrl("/favorite/"), {
                     method: "DELETE",
                     credentials: "include",
                     headers: {

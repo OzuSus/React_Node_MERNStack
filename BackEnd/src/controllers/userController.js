@@ -1,6 +1,12 @@
 import User from "../models/User.js";
 import {
     changePasswordService,
+    checkUserExistsService,
+    confirmCollaboratorService,
+    createUserByAdminService,
+    getPendingCollaboratorsService,
+    getRegularUserMonthlyStatsService,
+    getRegularUsersService,
     getUserService, resetPasswordService,
     updateAccountService,
     updateAvatarService,
@@ -22,7 +28,65 @@ export async function validatePassword(req, res, next) {
     try {
         const { password } = req.body;
         await validatePasswordService(password);
-        return res.status(200).json({message: "Password hop le!"});
+        return res.status(200).json({valid: true, message: "Password hop le!"});
+    } catch (err) {
+        next(err);
+    }
+}
+
+export async function getRegularUsers(req, res, next) {
+    try {
+        const users = await getRegularUsersService();
+        return res.status(200).json(users);
+    } catch (err) {
+        next(err);
+    }
+}
+
+export async function getRegularUserMonthlyStats(req, res, next) {
+    try {
+        const stats = await getRegularUserMonthlyStatsService();
+        return res.status(200).json(stats);
+    } catch (err) {
+        next(err);
+    }
+}
+
+export async function checkUserExists(req, res, next) {
+    try {
+        const result = await checkUserExistsService(req.query);
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+}
+
+export async function createUserByAdmin(req, res, next) {
+    try {
+        const user = await createUserByAdminService(req.body);
+        return res.status(201).json({message: "Tao user thanh cong", user});
+    } catch (err) {
+        next(err);
+    }
+}
+
+export async function getPendingCollaborators(req, res, next) {
+    try {
+        const users = await getPendingCollaboratorsService();
+        return res.status(200).json(users.map(mapCollaborator));
+    } catch (err) {
+        next(err);
+    }
+}
+
+export async function confirmCollaborator(req, res, next) {
+    try {
+        const isConfirmed = req.query.isConfirmed === "true" || req.body?.isConfirmed === true;
+        const user = await confirmCollaboratorService(req.params.id, isConfirmed);
+        return res.status(200).json({
+            responseMessage: isConfirmed ? "Da duyet CTV" : "Da tu choi CTV",
+            user
+        });
     } catch (err) {
         next(err);
     }
@@ -76,4 +140,19 @@ export async function resetPassword(req,res,next) {
     }catch (err) {
         next(err);
     }
+}
+
+function mapCollaborator(user) {
+    const [firstName = "", ...rest] = (user.fullname || "").split(" ");
+    return {
+        id: user._id,
+        firstName,
+        lastName: rest.join(" "),
+        email: user.email,
+        phoneNo: user.phone,
+        location: user.address,
+        experienceAndSkills: user.experienceAndSkills || "",
+        sampleWorkLink: user.sampleWorkLink || "",
+        reason: user.reason || ""
+    };
 }

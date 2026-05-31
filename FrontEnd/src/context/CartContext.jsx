@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
-import axios from "axios";
-import Swal from "sweetalert2";
 import {showConfirmDialog, showErrorDialog, showSuccessDialog} from "../utils/Alert";
+import {api, buildApiUrl} from "../utils/api";
 
 export const CartContext = createContext();
 
@@ -12,13 +11,13 @@ export const CartProvider = ({ children }) => {
 
     const fetchCartItems = async (userId) => {
         try {
-            const response = await fetch("http://localhost:5000/cart", {
+            const response = await fetch(buildApiUrl("/cart"), {
                 method:"GET",
                 credentials: "include",
             });
             const items = await response.json();
             setCartItems(items);
-            const categoryPromises = items.map(item => axios.get(`http://localhost:5000/categories/${item.id_product.id_category}`));
+            const categoryPromises = items.map(item => api.get(`/categories/${item.id_product.id_category}`));
             const categoryResponses = await Promise.all(categoryPromises);
             const categoryMap = categoryResponses.reduce((acc, res) => {
                 acc[res.data._id] = res.data.name;
@@ -38,7 +37,7 @@ export const CartProvider = ({ children }) => {
         const result = await showConfirmDialog("Bạn có muốn thêm vào giỏ hàng?");
         if (result.isConfirmed) {
             try {
-                const response = await fetch("http://localhost:5000/cart/add", {
+                const response = await fetch(buildApiUrl("/cart/add"), {
                     method: "POST",
                     credentials: "include",
                     headers: {
@@ -66,7 +65,7 @@ export const CartProvider = ({ children }) => {
         const result = await showConfirmDialog("Bạn có chắc muốn xóa sản phẩm khỏi giỏ hàng?", "warning");
         if (result.isConfirmed) {
             try {
-                const response = await fetch("http://localhost:5000/cart/remove", {
+                const response = await fetch(buildApiUrl("/cart/remove"), {
                     method: "DELETE",
                     credentials: "include",
                     headers: {
@@ -91,7 +90,7 @@ export const CartProvider = ({ children }) => {
     };
     const increaseQuantity = async (userId, productId) => {
         try {
-            await fetch("http://localhost:5000/cart/increase", {
+            await fetch(buildApiUrl("/cart/increase"), {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -111,7 +110,7 @@ export const CartProvider = ({ children }) => {
             await deteleProductInCart(userId, productId);
         } else {
             try {
-                await fetch("http://localhost:5000/cart/decrease", {
+                await fetch(buildApiUrl("/cart/decrease"), {
                     method: "POST",
                     credentials: "include",
                     headers: {

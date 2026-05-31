@@ -60,3 +60,8 @@ export const productSchema = Joi.object({
             "string.length": "Thong tin tho kim hoan phai co do dai 24 ky tu",
         }),
 });
+
+export const productUpdateSchema = productSchema.fork(
+    ["name", "price", "description", "image", "quantity", "id_category"],
+    (schema) => schema.optional()
+);

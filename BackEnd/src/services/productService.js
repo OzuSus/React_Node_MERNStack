@@ -32,6 +32,25 @@ export async function createNewProductService(productData) {
     return newProduct;
 }
 
+export async function updateProductService(productId, productData) {
+    const product = await Product.findByIdAndUpdate(productId, productData, {
+        new: true,
+        runValidators: true
+    });
+    if (!product) {
+        throw new ApiError(404, "Ko tim thay san pham!");
+    }
+    return product;
+}
+
+export async function deleteProductService(productId) {
+    const product = await Product.findByIdAndDelete(productId);
+    if (!product) {
+        throw new ApiError(404, "Ko tim thay san pham!");
+    }
+    return product;
+}
+
 export async function getProductByTagService(tag) {
     const products = await Product.find({tag: tag});
     return products;
