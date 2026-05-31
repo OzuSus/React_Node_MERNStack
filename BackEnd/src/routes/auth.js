@@ -16,7 +16,7 @@ import {requireAuth} from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 router.post("/register",limiter, validate(registerSchema), register);
-router.post("/login", limiter, validate(loginSchema), login);
+router.post("/login", validate(loginSchema), login);
 router.get("/verify", limiter, verifyEmail);
 router.post("/resend-verification", limiter, resendVerification);
 router.get("/check-user",limiter, checkAccount);
