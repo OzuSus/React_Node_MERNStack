@@ -92,7 +92,7 @@ export default function Header() {
                     <NavLink to="contact">
                         <li className="NavItem">Contact</li>
                     </NavLink>
-                    {userInfo?.roleId === 2 && (
+                    {userInfo?.role === "ADMIN" && (
                         <NavLink to="/admin">
                             <li className="NavItem">Admin</li>
                         </NavLink>

@@ -30,6 +30,13 @@ import FailedOrder from "./pages/FailedOrder/index.jsx";
 import VNPaymentReturn from "./pages/VNPaymentReturn/index.jsx";
 import PurchaseHistory from "./pages/PurchaseHistory/index.jsx";
 import {PurchaseHistoryProvider} from "./context/PurchaseHistoryContext.jsx";
+import AdminLayout from "./pages/Admin/index.jsx";
+import WelcomeAdmin from "./components/WelcomeAdmin.jsx";
+import Dashboard from "./pages/Admin/pages/Dashboard.jsx";
+import OrdersAdmin from "./pages/Admin/pages/Orders.jsx";
+import Customers from "./pages/Admin/pages/Customer.jsx";
+import ProductManagement from "./pages/Admin/pages/ProductManagement.jsx";
+
 
 // import Cart from "./pages/Cart/index.jsx";
 
@@ -67,7 +74,13 @@ function App() {
                                                     <Route path="/FailedOrder" element={<FailedOrder/>}/>
                                                     <Route path="/payment-return" element={<VNPaymentReturn/>}/>
                                                     <Route path="/PurchaseHistory" element={<PurchaseHistory/>}/>
-
+                                                    <Route path="/admin" element={<AdminLayout/>}>
+                                                        <Route index element={<WelcomeAdmin />} />
+                                                        <Route path="dashboard" element={<Dashboard/>}/>
+                                                        <Route path="orders" element={<OrdersAdmin/>}/>
+                                                        <Route path="users" element={<Customers/>}/>
+                                                        <Route path="products" element={<ProductManagement/>}/>
+                                                    </Route>
                                                 </Routes>
                                             </div>
                                             <Footer/>
