@@ -38,6 +38,8 @@ import Customers from "./pages/Admin/pages/Customer.jsx";
 import ProductManagement from "./pages/Admin/pages/ProductManagement.jsx";
 import CategoryManagement from "./pages/Admin/pages/CategoryManagement.jsx";
 import ApproveCTV from "./pages/Admin/pages/ApproveCTV.jsx";
+import {AdminProductsProvider} from "./context/AdminProductsContext.jsx";
+import {OrderProvider} from "./context/OrderContext.jsx";
 
 
 // import Cart from "./pages/Cart/index.jsx";
@@ -52,43 +54,47 @@ function App() {
                             <CartProvider>
                                 <FavoriteProvider>
                                     <ChangePasswordProvider>
-                                        <BrowserRouter>
-                                            <Header/>
-                                            <div className="mainApp">
-                                                <Routes>
-                                                    <Route path="/" element={<Home/>}/>
-                                                    <Route path="/Home" element={<Home/>}/>
-                                                    <Route path="/Shop" element={<Shop/>}/>
-                                                    <Route path="/Cart" element={<Cart/>}/>
-                                                    <Route path="/Login" element={<Login/>}/>
-                                                    <Route path="/Forgot-Password" element={<ForgotPassword/>}/>
-                                                    <Route path="/Register" element={<Register/>}/>
-                                                    <Route path="/Favorite" element={<Favorite/>}/>
-                                                    <Route path="/Products/:prodID" element={
-                                                        <ProductProvider>
-                                                            <ProductDetails/>
-                                                        </ProductProvider>
-                                                    }/>
-                                                    <Route path="/Checkout" element={<Checkout/>}/>
-                                                    <Route path="/Profile" element={<Profile/>}/>
-                                                    <Route path="/ChangePassWord" element={<ChangePassWord/>}/>
-                                                    <Route path="/OrderSuccess" element={<OrderSuccess/>}/>
-                                                    <Route path="/FailedOrder" element={<FailedOrder/>}/>
-                                                    <Route path="/payment-return" element={<VNPaymentReturn/>}/>
-                                                    <Route path="/PurchaseHistory" element={<PurchaseHistory/>}/>
-                                                    <Route path="/admin" element={<AdminLayout/>}>
-                                                        <Route index element={<WelcomeAdmin />} />
-                                                        <Route path="dashboard" element={<Dashboard/>}/>
-                                                        <Route path="orders" element={<OrdersAdmin/>}/>
-                                                        <Route path="users" element={<Customers/>}/>
-                                                        <Route path="products" element={<ProductManagement/>}/>
-                                                        <Route path="categories" element={<CategoryManagement/>}/>
-                                                        <Route path="approve-ctv" element={<ApproveCTV/>}/>
-                                                    </Route>
-                                                </Routes>
-                                            </div>
-                                            <Footer/>
-                                        </BrowserRouter>
+                                        <AdminProductsProvider>
+                                            <OrderProvider>
+                                                <BrowserRouter>
+                                                    <Header/>
+                                                    <div className="mainApp">
+                                                        <Routes>
+                                                            <Route path="/" element={<Home/>}/>
+                                                            <Route path="/Home" element={<Home/>}/>
+                                                            <Route path="/Shop" element={<Shop/>}/>
+                                                            <Route path="/Cart" element={<Cart/>}/>
+                                                            <Route path="/Login" element={<Login/>}/>
+                                                            <Route path="/Forgot-Password" element={<ForgotPassword/>}/>
+                                                            <Route path="/Register" element={<Register/>}/>
+                                                            <Route path="/Favorite" element={<Favorite/>}/>
+                                                            <Route path="/Products/:prodID" element={
+                                                                <ProductProvider>
+                                                                    <ProductDetails/>
+                                                                </ProductProvider>
+                                                            }/>
+                                                            <Route path="/Checkout" element={<Checkout/>}/>
+                                                            <Route path="/Profile" element={<Profile/>}/>
+                                                            <Route path="/ChangePassWord" element={<ChangePassWord/>}/>
+                                                            <Route path="/OrderSuccess" element={<OrderSuccess/>}/>
+                                                            <Route path="/FailedOrder" element={<FailedOrder/>}/>
+                                                            <Route path="/payment-return" element={<VNPaymentReturn/>}/>
+                                                            <Route path="/PurchaseHistory" element={<PurchaseHistory/>}/>
+                                                            <Route path="/admin" element={<AdminLayout/>}>
+                                                                <Route index element={<WelcomeAdmin />} />
+                                                                <Route path="dashboard" element={<Dashboard/>}/>
+                                                                <Route path="orders" element={<OrdersAdmin/>}/>
+                                                                <Route path="users" element={<Customers/>}/>
+                                                                <Route path="products" element={<ProductManagement/>}/>
+                                                                <Route path="categories" element={<CategoryManagement/>}/>
+                                                                <Route path="approve-ctv" element={<ApproveCTV/>}/>
+                                                            </Route>
+                                                        </Routes>
+                                                    </div>
+                                                    <Footer/>
+                                                </BrowserRouter>
+                                            </OrderProvider>
+                                        </AdminProductsProvider>
                                     </ChangePasswordProvider>
                                 </FavoriteProvider>
                             </CartProvider>
